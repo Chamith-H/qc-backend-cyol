@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Inspection, InspectionDocument } from 'src/schemas/inspection.schema';
 import { CreateInspectionDto } from './inspection.dto';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
+import { BatchOriginService } from '../batch-origin/batch-origin.service';
 
 @Injectable()
 export class InspectionService {
@@ -11,6 +12,7 @@ export class InspectionService {
     @InjectModel(Inspection.name)
     private readonly inspectionModel: Model<InspectionDocument>,
     private readonly itemParameterService: ItemParameterService,
+    private readonly batchOriginService: BatchOriginService
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -18,15 +20,18 @@ export class InspectionService {
       dto,
     );
 
+    const newBatchNumber = await this.batchOriginService.save_newBatch()
+    console.log(newBatchNumber)
+
     const inspectionData = {
       number: 0,
       requestId: '',
-      baseDocId: '',
-      stage:'',
-      itemCode: '',
+      baseDocId: dto.baseDoc,
+      stage: dto.stage,
+      itemCode: dto.itemCode,
       batch: '',
-      qualityChecking: '',
-      quantity: '',
+      qualityChecking: checkingData,
+      quantity: '_',
       warehouse: '_',
       qcStatus: 'Pending',
       transaction: 'Pending',
@@ -34,9 +39,7 @@ export class InspectionService {
       inspectorName: '',
       inspectionDate: '',
       description: '',
-      remarks: ''
-    }
-
-    return checkingData;
+      remarks: '',
+    };
   }
 }

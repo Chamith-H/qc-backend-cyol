@@ -1,7 +1,6 @@
-import { InspectionModule } from './../inspection/inspection.module';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, UpdateQuery } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   ItemParameter,
   ItemParameterDocument,
