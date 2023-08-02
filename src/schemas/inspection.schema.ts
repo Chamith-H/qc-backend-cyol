@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { EquipmentDocument } from './equipment.schema';
+import { ObservedDataDocument } from './observed-data.schema';
 
-export type QcParameterDocument = Inspection & Document;
-
+export type InspectionDocument = Inspection & Document;
 @Schema()
 export class Inspection {
   @Prop()
@@ -12,8 +11,8 @@ export class Inspection {
   @Prop()
   requestId: string;
 
-  @Prop({type: String, ref: 'Basedoc'})
-  baseDocId: EquipmentDocument['_id'] // change to base doc details
+  @Prop()
+  baseDocId: string;
 
   @Prop()
   itemCode: string;
@@ -24,8 +23,8 @@ export class Inspection {
   @Prop()
   stage: string;
 
-  @Prop()
-  qualityChecking: string;
+  @Prop({ type: [{ type: String, ref: 'ObservedData' }] })
+  qualityChecking: ObservedDataDocument['_id'][];
 
   @Prop()
   quantity: string;

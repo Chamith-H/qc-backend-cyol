@@ -1,12 +1,11 @@
-import { IsNotEmpty } from "class-validator";
-
+import { IsNotEmpty } from 'class-validator';
 export class CreateInspectionDto {
-    @IsNotEmpty()
-    baseDocId: string;
+  @IsNotEmpty()
+  itemCode: string;
 
-    @IsNotEmpty()
-    itemParameterId: string;
+  @IsNotEmpty()
+  stage: string;
 
-    @IsNotEmpty()
-    stage: string
+  @IsNotEmpty()
+  baseDoc: string;
 }

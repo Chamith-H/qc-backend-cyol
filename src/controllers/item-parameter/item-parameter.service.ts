@@ -1,3 +1,4 @@
+import { InspectionModule } from './../inspection/inspection.module';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
@@ -134,8 +135,9 @@ export class ItemParameterService {
   async inspectionParameters(dto: InspectionParameterDto) {
     const stages = (
       await this.itemParameterModel
-        .findOne({ _id: dto.itemParameterId })
+        .findOne({ itemCode: dto.itemCode })
         .populate({ path: 'stages' })
+        .exec()
     ).stages;
 
     const selected_stageParameters = stages.find(
@@ -144,9 +146,11 @@ export class ItemParameterService {
 
     return await Promise.all(
       selected_stageParameters.map(async (standardData) => {
-        const observedDataDto = {standardDataId: standardData}
-        return await this.observedDataService.initializeObservedData(observedDataDto)
-      })
-    )
+        const observedDataDto = { standardDataId: standardData };
+        return await this.observedDataService.initializeObservedData(
+          observedDataDto,
+        );
+      }),
+    );
   }
 }

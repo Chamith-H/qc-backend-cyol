@@ -13,5 +13,6 @@ import { ItemParameterModule } from '../item-parameter/item-parameter.module';
   ],
   controllers: [TokenController],
   providers: [TokenService, RequestGenerater],
+  exports: [TokenService]
 })
 export class TokenModule {}

@@ -15,7 +15,6 @@ import { TokenModule } from './controllers/token/token.module';
 import { StageModule } from './controllers/stage/stage.module';
 import { StandardDataModule } from './controllers/standard-data/standard-data.module';
 import { ObservedDataModule } from './controllers/observed-data/observed-data.module';
-import { BasedocModule } from './controllers/basedoc/basedoc.module';
 
 @Module({
   imports: [
@@ -34,7 +33,6 @@ import { BasedocModule } from './controllers/basedoc/basedoc.module';
     StageModule,
     StandardDataModule,
     ObservedDataModule,
-    BasedocModule,
   ],
   controllers: [AppController],
   providers: [AppService],
