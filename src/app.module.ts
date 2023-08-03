@@ -16,11 +16,14 @@ import { StageModule } from './controllers/stage/stage.module';
 import { StandardDataModule } from './controllers/standard-data/standard-data.module';
 import { ObservedDataModule } from './controllers/observed-data/observed-data.module';
 import { BatchOriginModule } from './controllers/batch-origin/batch-origin.module';
+import { DocOriginModule } from './controllers/doc-origin/doc-origin.module';
+import { RejectionMasterModule } from './controllers/rejection-master/rejection-master.module';
+import { CancellationMasterModule } from './controllers/cancellation-master/cancellation-master.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      "mongodb+srv://canacademy:cana9875sh@canacademy.a2xbmdz.mongodb.net/cyolqcapp",
+      'mongodb+srv://chamith:12345@fulstack-training.dck8ac8.mongodb.net/cyolQC',
     ),
     AuthModule,
     RoleModule,
@@ -35,6 +38,9 @@ import { BatchOriginModule } from './controllers/batch-origin/batch-origin.modul
     StandardDataModule,
     ObservedDataModule,
     BatchOriginModule,
+    DocOriginModule,
+    RejectionMasterModule,
+    CancellationMasterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

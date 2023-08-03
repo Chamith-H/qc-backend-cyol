@@ -17,7 +17,10 @@ export class ObservedDataService {
   async initializeObservedData(dto: CreateObservedDataDto) {
     const initial = {
         standardData: dto.standardDataId,
-        observedValue: ''
+        observedValue: '',
+        checker: '',
+        checkedDate: '',
+        checkedStatus:'Pending'
     }
 
     const newInitialValue = new this.observedDataModel(initial)

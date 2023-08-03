@@ -13,10 +13,7 @@ export class ObservedData {
   observedValue: string;
 
   @Prop()
-  checkerCode: string;
-
-  @Prop()
-  checkerName: string;
+  checker: string;
 
   @Prop()
   checkedDate: string;

@@ -1,5 +1,5 @@
 export class RequestGenerater {
-  async create_NewRequest(dataModel: any, count: number, prefix: string) {
+  async create_NewRequest(dataModel: any, prefix: string) {
     try {
       const currentReq = await dataModel.aggregate([
         {
@@ -10,10 +10,10 @@ export class RequestGenerater {
         },
       ]);
 
-      const newRequestNumber = currentReq[0].maxNum + count + 1;
+      const newRequestNumber = currentReq[0].maxNum + 1;
       return await this.generate_NewId(newRequestNumber, prefix);
     } catch (error) {
-      const newRequestNumber = count + 1;
+      const newRequestNumber = 1;
       return await this.generate_NewId(newRequestNumber, prefix);
     }
   }

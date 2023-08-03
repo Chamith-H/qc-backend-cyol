@@ -1,6 +1,6 @@
 import { Controller, Body, Post, Get } from '@nestjs/common';
 import { ItemParameterService } from './item-parameter.service';
-import { CreateItemParameterDto, InspectionParameterDto, SelectedItemDto } from './item-parameter.dto';
+import { CreateItemParameterDto, FilterItemDto, InspectionParameterDto, SelectedItemDto } from './item-parameter.dto';
 
 @Controller('item-parameter')
 export class ItemParameterController {
@@ -11,8 +11,13 @@ export class ItemParameterController {
         return await this.itemParameterService.add_newItemParameter(dto)
     }
 
-    @Get('all')
-    async getItemParameters() {
-        return await this.itemParameterService.get_allItemParameters()
+    @Post('all')
+    async getItemParameters(@Body() dto: FilterItemDto) {
+        return await this.itemParameterService.get_allItemParameters(dto)
+    }
+
+    @Post('selected')
+    async selectedParameter(@Body() dto: FilterItemDto) {
+        return await this.itemParameterService.get_selectedParameter(dto)
     }
 }

@@ -32,6 +32,9 @@ export class BatchOriginService {
 
     const batchOriginDoc = { currentNo: newBatchNumber };
     const newBatch = new this.batchModel(batchOriginDoc);
-    return await newBatch.save();
+    const saveBatch = await newBatch.save();
+    console.log();
+
+    return 'BT-' + saveBatch.currentNo.toString();
   }
 }

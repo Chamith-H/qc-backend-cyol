@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { DocOriginDocument } from './doc-origin.schema';
 
 export type TokenDocument = Token & Document;
 
@@ -23,8 +24,8 @@ export class Token {
   @Prop()
   vehicle: string;
 
-  @Prop()
-  items: any[];
+  @Prop({ type: [{ type: String, ref: 'DocOrigin' }] })
+  docItems: DocOriginDocument['_id'][];
 
   @Prop()
   date: string;

@@ -10,4 +10,9 @@ export class TokenController {
     async generateToken(@Body() dto: CreateTokenDto) {
         return this.tokenService.create_newToken(dto)
     }
+
+    @Get('all')
+    async getTokens() {
+        return await this.tokenService.get_allTokens()
+    }
 }

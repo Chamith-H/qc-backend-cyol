@@ -12,22 +12,49 @@ export class Inspection {
   requestId: string;
 
   @Prop()
-  baseDocId: string;
+  baseDocument: string;
+
+  @Prop()
+  stage: string;
 
   @Prop()
   itemCode: string;
 
   @Prop()
-  batch: number;
+  baseDoc: string;
 
   @Prop()
-  stage: string;
+  batch: string;
 
   @Prop({ type: [{ type: String, ref: 'ObservedData' }] })
   qualityChecking: ObservedDataDocument['_id'][];
 
   @Prop()
   quantity: string;
+
+  @Prop()
+  warehouse: string;
+
+  @Prop()
+  qcStatus: string;
+
+  @Prop()
+  transaction: string;
+
+  @Prop()
+  inspector: string;
+
+  @Prop()
+  inspectionDate: string;
+
+  @Prop()
+  description: string;
+
+  @Prop()
+  remarks: string;
+
+  @Prop()
+  date: string;
 }
 
 export const InspectionSchema = SchemaFactory.createForClass(Inspection);

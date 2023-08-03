@@ -5,6 +5,7 @@ import { Token, TokenDocument } from 'src/schemas/token.schema';
 import { Model } from 'mongoose';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
+import { DocOriginService } from '../doc-origin/doc-origin.service';
 
 @Injectable()
 export class TokenService {
@@ -12,24 +13,30 @@ export class TokenService {
     @InjectModel(Token.name) private readonly tokenModel: Model<TokenDocument>,
     private readonly requestGenerater: RequestGenerater,
     private readonly itemParameterService: ItemParameterService,
+    private readonly docOriginService: DocOriginService,
   ) {}
 
   async create_newToken(dto: CreateTokenDto) {
     const tokenData = await this.requestGenerater.create_NewRequest(
       this.tokenModel,
-      0,
-      'T',
+      'TOKEN',
     );
 
-    const selectedItems = await Promise.all(
+    const docOriginItems = await Promise.all(
       dto.items.map(async (item) => {
-        return {
+
+        const inspectData = {
+          baseDocNo: tokenData.requestId,
+          baseDocType: 'Token',
+          refDocNo: dto.poNumber,
+          refDocType: 'PO',
           itemCode: item.itemCode,
-          parameterId: await this.itemParameterService.get_parameterId(
-            item.itemCode,
-          ),
           line: item.line,
-        };
+          qcRequest: 'Pending'
+        }
+        
+        return this.docOriginService.create_docOrigin(inspectData)
+
       }),
     );
 
@@ -39,10 +46,14 @@ export class TokenService {
       number: tokenData.requestNumber,
       tokenId: tokenData.requestId,
       ...dto,
-      items: selectedItems,
+      docItems: docOriginItems,
     };
 
     const newToken = new this.tokenModel(tokenInfo);
     return await newToken.save();
+  }
+
+  async get_allTokens() {
+    return await this.tokenModel.find({}).populate({path: 'docItems'})
   }
 }

@@ -5,7 +5,7 @@ import {
   QcParameterDocument,
 } from '../../schemas/qc-parameter.schema';
 import { Model } from 'mongoose';
-import { CreateQcParameterDto } from './qc-parameter.dto';
+import { CreateQcParameterDto, FilterQcParameterDto } from './qc-parameter.dto';
 
 @Injectable()
 export class QcParameterService {
@@ -31,9 +31,9 @@ export class QcParameterService {
   }
 
   //--> Get all QC parameters ---------------------------------------------------------------<
-  async get_allQcParameters() {
+  async get_allQcParameters(dto: FilterQcParameterDto) {
     return await this.qcParameterModel
-      .find({})
+      .find(dto)
       .populate({ path: 'uom equipment' })
       .exec();
   }

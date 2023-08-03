@@ -7,6 +7,7 @@ import {
 } from 'src/schemas/item-parameter.schema';
 import {
   CreateItemParameterDto,
+  FilterItemDto,
   InspectionParameterDto,
   SelectedItemDto,
   UpdateStageDto,
@@ -115,20 +116,43 @@ export class ItemParameterService {
     return (await this.itemParameterModel.findOne({ item: itemCode }))._id;
   }
 
-  async get_allItemParameters() {
-    return await this.itemParameterModel
-      .find({})
+  async get_allItemParameters(dto: FilterItemDto) {
+    const itemParameters = await this.itemParameterModel
+      .find(dto)
       .populate({
         path: 'stages',
-        populate: {
-          path: 'parameterData',
-          populate: {
-            path: 'parameter',
-            populate: { path: 'uom equipment' },
-          },
-        },
       })
       .exec();
+
+    let stageCount = 0;
+    const dataSet = await Promise.all(
+      itemParameters.map(async (itemParameter) => {
+        let parameterCount = 0;
+        stageCount = itemParameter.stages.length;
+        await Promise.all(
+          itemParameter.stages.map(async (stage) => {
+            parameterCount = parameterCount + stage.parameterData.length;
+          }),
+        );
+
+        return {
+          itemCode: itemParameter.toObject().itemCode,
+          stageCount: stageCount,
+          parameterCount: parameterCount,
+        };
+      }),
+    );
+
+    return dataSet;
+  }
+
+  async get_selectedParameter(dto: FilterItemDto) {
+    return await this.itemParameterModel
+      .findOne(dto)
+      .populate({
+        path: 'stages',
+        populate: { path: 'parameterData', populate: { path: 'parameter', populate: {path: 'uom'}} },
+      });
   }
 
   async inspectionParameters(dto: InspectionParameterDto) {

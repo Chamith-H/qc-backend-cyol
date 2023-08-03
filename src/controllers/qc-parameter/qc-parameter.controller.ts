@@ -1,6 +1,6 @@
 import { Controller, Body, Get, Post } from '@nestjs/common';
 import { QcParameterService } from './qc-parameter.service';
-import { CreateQcParameterDto } from './qc-parameter.dto';
+import { CreateQcParameterDto, FilterQcParameterDto } from './qc-parameter.dto';
 
 @Controller('qc-parameter')
 export class QcParameterController {
@@ -11,8 +11,8 @@ export class QcParameterController {
     return await this.qcParameterService.add_newQcParameter(dto);
   }
 
-  @Get('all')
-  async allQcParameters() {
-    return await this.qcParameterService.get_allQcParameters();
+  @Post('all')
+  async allQcParameters(@Body() dto: FilterQcParameterDto) {
+    return await this.qcParameterService.get_allQcParameters(dto);
   }
 }
