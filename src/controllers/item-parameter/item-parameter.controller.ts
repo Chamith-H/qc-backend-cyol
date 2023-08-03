@@ -20,4 +20,9 @@ export class ItemParameterController {
     async selectedParameter(@Body() dto: FilterItemDto) {
         return await this.itemParameterService.get_selectedParameter(dto)
     }
+
+    @Post('choosed')
+    async selectedItemsStage(@Body() dto: InspectionParameterDto) {
+        return await this.itemParameterService.get_itemSelectedStage(dto)
+    }
 }

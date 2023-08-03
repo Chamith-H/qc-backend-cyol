@@ -15,4 +15,9 @@ export class QcParameterController {
   async allQcParameters(@Body() dto: FilterQcParameterDto) {
     return await this.qcParameterService.get_allQcParameters(dto);
   }
+
+  @Get('every')
+  async everyQcParameters() {
+    return this.qcParameterService.get_allQcParametersToSelect()
+  }
 }

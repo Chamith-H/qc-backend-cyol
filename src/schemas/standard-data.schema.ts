@@ -7,7 +7,7 @@ export type StandardDataDocument = StandardData & Document;
 @Schema()
 export class StandardData {
   @Prop({type: String, ref: 'QcParameter'})
-  parameter: QcParameterDocument['id']
+  parameterId: QcParameterDocument['id']
 
   @Prop()
   minValue: string;
@@ -17,6 +17,9 @@ export class StandardData {
 
   @Prop()
   stdValue: string;
+
+  @Prop()
+  mandatory: boolean
 }
 
 export const StandardDataSchema = SchemaFactory.createForClass(StandardData);

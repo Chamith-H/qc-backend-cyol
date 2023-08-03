@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 class DataDto {
     @IsNotEmpty()
     @IsString()
-    parameter: string;
+    parameterId: string;
 
     @IsNotEmpty()
     @IsString()
@@ -17,6 +17,8 @@ class DataDto {
     @IsNotEmpty()
     @IsString()
     stdValue: string;
+
+    mandatory: boolean;
 }
 
 class StageDto {

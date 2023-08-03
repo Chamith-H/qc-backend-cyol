@@ -38,6 +38,10 @@ export class QcParameterService {
       .exec();
   }
 
+  async get_allQcParametersToSelect() {
+    return await this.qcParameterModel.find({});
+  }
+
   //--> Get selected QC parameter -----------------------------------------------------------<
   async selected_qcParameter(id: string) {
     return await this.qcParameterModel

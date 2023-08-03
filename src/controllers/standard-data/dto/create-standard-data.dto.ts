@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateStandardDataDto {
   @IsNotEmpty()
   @IsString()
-  parameter: string;
+  parameterId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -16,4 +16,6 @@ export class CreateStandardDataDto {
   @IsNotEmpty()
   @IsString()
   stdValue: string;
+
+  mandatory: boolean
 }

@@ -151,8 +151,24 @@ export class ItemParameterService {
       .findOne(dto)
       .populate({
         path: 'stages',
-        populate: { path: 'parameterData', populate: { path: 'parameter', populate: {path: 'uom'}} },
+        populate: { path: 'parameterData', populate: { path: 'parameterId', populate: {path: 'uom'}} },
       });
+  }
+
+  async get_itemSelectedStage(dto: InspectionParameterDto) {
+    console.log(dto)
+    const stages = (
+      await this.itemParameterModel
+        .findOne({ itemCode: dto.itemCode })
+        .populate({ path: 'stages', populate: {path: 'parameterData', populate: { path: 'parameterId'}}})
+        .exec()
+    ).stages;
+
+    const selected_stageParameters = stages.find(
+      (stage) => stage.stageName === dto.stage,
+    ).parameterData;
+
+    return selected_stageParameters
   }
 
   async inspectionParameters(dto: InspectionParameterDto) {

@@ -19,6 +19,7 @@ import { BatchOriginModule } from './controllers/batch-origin/batch-origin.modul
 import { DocOriginModule } from './controllers/doc-origin/doc-origin.module';
 import { RejectionMasterModule } from './controllers/rejection-master/rejection-master.module';
 import { CancellationMasterModule } from './controllers/cancellation-master/cancellation-master.module';
+import { SapIntegrationModule } from './controllers/sap-integration/sap-integration.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CancellationMasterModule } from './controllers/cancellation-master/canc
     DocOriginModule,
     RejectionMasterModule,
     CancellationMasterModule,
+    SapIntegrationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
