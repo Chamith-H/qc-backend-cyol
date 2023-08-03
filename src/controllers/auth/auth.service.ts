@@ -57,7 +57,8 @@ export class AuthService {
       role: 2,
     };
 
-    return await this.jwtProvider.generateToken(payload);
+    const token = await this.jwtProvider.generateToken(payload);
+    return {statusCode: 200, token: token}
   }
 
   //--> Getting users all data without the password --------------------------------------------------<

@@ -147,28 +147,42 @@ export class ItemParameterService {
   }
 
   async get_selectedParameter(dto: FilterItemDto) {
-    return await this.itemParameterModel
-      .findOne(dto)
-      .populate({
-        path: 'stages',
-        populate: { path: 'parameterData', populate: { path: 'parameterId', populate: {path: 'uom'}} },
-      });
+    return await this.itemParameterModel.findOne(dto).populate({
+      path: 'stages',
+      populate: {
+        path: 'parameterData',
+        populate: { path: 'parameterId', populate: { path: 'uom' } },
+      },
+    });
   }
 
   async get_itemSelectedStage(dto: InspectionParameterDto) {
-    console.log(dto)
-    const stages = (
+    const parameterData = (
       await this.itemParameterModel
         .findOne({ itemCode: dto.itemCode })
-        .populate({ path: 'stages', populate: {path: 'parameterData', populate: { path: 'parameterId'}}})
+        .populate({
+          path: 'stages',
+          populate: {
+            path: 'parameterData',
+            populate: { path: 'parameterId' },
+          },
+        })
         .exec()
-    ).stages;
+    );
 
-    const selected_stageParameters = stages.find(
+    if(parameterData === null) {
+      return []
+    }
+
+    const selected_stageParameters = parameterData.stages.find(
       (stage) => stage.stageName === dto.stage,
-    ).parameterData;
+    );
 
-    return selected_stageParameters
+    if(selected_stageParameters === null || selected_stageParameters === undefined) {
+      return []
+    }
+
+    return selected_stageParameters.parameterData;
   }
 
   async inspectionParameters(dto: InspectionParameterDto) {

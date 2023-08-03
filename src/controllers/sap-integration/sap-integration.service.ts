@@ -43,7 +43,28 @@ export class SapIntegrationService {
       });
       return getQCItems.data.value;
     } catch (error) {
-      throw error
+      throw error;
     }
+  }
+
+  async get_purchaseOrders(token: string) {
+    const path = '/PurchaseOrders';
+    const logic =
+      "?$select=DocNum,Supplier,DocumentLines&$filter=DocumentStatus ne 'C'";
+
+    try {
+      const getPOs = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return getPOs.data.value
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async selected_purchaseOrder(token: string) {
+    
   }
 }

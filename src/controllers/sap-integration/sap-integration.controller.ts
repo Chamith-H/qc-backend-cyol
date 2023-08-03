@@ -21,4 +21,12 @@ export class SapIntegrationController {
             res.status(200).jsonp(response)
         }
     }
+
+    @Get('po')
+    async sapPos(@Headers('sessionId') session: string, @Res() res: Response) {
+        const response = await this.sapIntegrationService.get_purchaseOrders(session)
+        if(response) {
+            res.status(200).jsonp(response)
+        }
+    }
 }
