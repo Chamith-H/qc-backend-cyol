@@ -25,4 +25,13 @@ export class DocOriginService {
       baseDoc: docOrigin.baseDocNo
     };
   }
+
+  async get_subData(id: string) {
+    const docOrigin = await this.docOriginModel.findOne({ _id: id });
+
+    return {
+      refDoc: docOrigin.refDocNo,
+      line: docOrigin.line,
+    };
+  }
 }

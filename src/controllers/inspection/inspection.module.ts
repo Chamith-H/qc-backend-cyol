@@ -7,6 +7,8 @@ import { ItemParameterModule } from '../item-parameter/item-parameter.module';
 import { BatchOriginModule } from '../batch-origin/batch-origin.module';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { DocOriginModule } from '../doc-origin/doc-origin.module';
+import { WeighBridgeModule } from '../weigh-bridge/weigh-bridge.module';
+import { TransactionReportModule } from '../transaction-report/transaction-report.module';
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { DocOriginModule } from '../doc-origin/doc-origin.module';
     ]),
     ItemParameterModule,
     BatchOriginModule,
-    DocOriginModule
+    DocOriginModule,
+    WeighBridgeModule,
+    TransactionReportModule,
   ],
   controllers: [InspectionController],
   providers: [InspectionService, RequestGenerater],

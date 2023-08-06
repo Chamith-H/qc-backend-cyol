@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
-import { CreateInspectionDto, FilterInspectionDto, SelectInspectionDto } from './inspection.dto';
+import { CreateInspectionDto, FilterInspectionDto, SelectInspectionDto, UpdateStatusDto, UpdateTransactionDto } from './inspection.dto';
 import { InspectionService } from './inspection.service';
 
 @Controller('inspection')
@@ -19,5 +19,15 @@ export class InspectionController {
   @Post('selected')
   async selectInspection(@Body() dto: SelectInspectionDto) {
     return await this.inspectionService.get_selectedInspection(dto)
+  }
+
+  @Post('update-status')
+  async updateQcStatus(@Body() dto: UpdateStatusDto) {
+    return await this.inspectionService.update_qcStatus(dto)
+  }
+
+  @Post('update-transaction')
+  async updateTransaction(@Body() dto: UpdateTransactionDto) {
+    return await this.inspectionService.update_Transaction(dto)
   }
 }

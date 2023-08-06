@@ -1,12 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inspection, InspectionDocument } from 'src/schemas/inspection.schema';
-import { CreateInspectionDto, FilterInspectionDto, SelectInspectionDto } from './inspection.dto';
+import {
+  CreateInspectionDto,
+  FilterInspectionDto,
+  SelectInspectionDto,
+  UpdateStatusDto,
+  UpdateTransactionDto,
+} from './inspection.dto';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
 import { BatchOriginService } from '../batch-origin/batch-origin.service';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { DocOriginService } from '../doc-origin/doc-origin.service';
+import { WeighBridgeService } from '../weigh-bridge/weigh-bridge.service';
+import { TransactionReportService } from '../transaction-report/transaction-report.service';
 
 @Injectable()
 export class InspectionService {
@@ -17,6 +25,8 @@ export class InspectionService {
     private readonly batchOriginService: BatchOriginService,
     private readonly requestGenerater: RequestGenerater,
     private readonly docOriginService: DocOriginService,
+    private readonly weighBridgeService: WeighBridgeService,
+    private readonly reportService: TransactionReportService
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -38,6 +48,7 @@ export class InspectionService {
     const inspectionData = {
       number: requestData.requestNumber,
       requestId: requestData.requestId,
+      docOrigin: dto.docOrigin,
       stage: inspectItem.stage,
       itemCode: inspectItem.itemCode,
       baseDoc: inspectItem.baseDoc,
@@ -49,6 +60,8 @@ export class InspectionService {
       transaction: 'Pending',
       inspector: '',
       inspectionDate: '',
+      transferor: '',
+      transactionDate: '',
       description: '',
       remarks: '',
       date: '2023-04-16',
@@ -71,8 +84,8 @@ export class InspectionService {
       delete dto.transaction;
     }
 
-    if(dto.date) {
-      dto.date = dto.date.slice(0, 10)
+    if (dto.date) {
+      dto.date = dto.date.slice(0, 10);
     }
 
     return await this.inspectionModel.find(dto).sort({ number: -1 }).exec();
@@ -80,14 +93,73 @@ export class InspectionService {
 
   async get_selectedInspection(dto: SelectInspectionDto) {
     return await this.inspectionModel
-      .findOne({_id: dto.inspectId})
+      .findOne({ _id: dto.inspectId })
       .populate({
         path: 'qualityChecking',
         populate: {
           path: 'standardData',
-          populate: { path: 'parameterId', populate: { path: 'uom equipment' } },
+          populate: {
+            path: 'parameterId',
+            populate: { path: 'uom equipment' },
+          },
         },
       })
       .exec();
+  }
+
+  async update_qcStatus(dto: UpdateStatusDto) {
+    const id = dto.inspectId;
+    delete dto.inspectId;
+
+    const updateStatus = await this.inspectionModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+    return updateStatus;
+  }
+
+  async update_Transaction(dto: UpdateTransactionDto) {
+    const updateData = {
+      transaction: dto.transaction,
+      transferor: dto.transferor,
+      transactionDate: dto.transactionDate,
+    };
+    const updateTransaction = await this.inspectionModel.updateOne(
+      { _id: dto.inspectId },
+      { $set: updateData },
+    );
+
+    if (updateTransaction.modifiedCount !== 1) {
+      throw new BadRequestException('This request already transfered');
+    }
+
+    if (dto.stage === 'Token') {
+      return await this.find_transferSectionTOKEN(dto);
+    }
+  }
+
+  async find_transferSectionTOKEN(dto: UpdateTransactionDto) {
+    if (dto.qcStatus === 'Approved') {
+      const refData = await this.docOriginService.get_subData(dto.docOrigin)
+
+      const weibridgeDto = {
+        tokenNo: dto.baseDocNo,
+        po: refData.refDoc,
+        itemCode: dto.itemCode,
+        line: refData.line,
+        batch: dto.batch,
+        date: dto.transactionDate
+      }
+
+      const createdResponse = await this.weighBridgeService.create_weighBridgeRequest(weibridgeDto)
+
+      const reportDto = {
+        requestNo: dto.inspectId,
+        requestCode: dto.inspectCode,
+        transferTo: createdResponse.transferTo,
+        newRequest: createdResponse.newRequest
+      }
+      return await this.reportService.create_newTransaction(reportDto)
+    }
   }
 }

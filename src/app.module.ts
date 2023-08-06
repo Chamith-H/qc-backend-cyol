@@ -20,6 +20,10 @@ import { DocOriginModule } from './controllers/doc-origin/doc-origin.module';
 import { RejectionMasterModule } from './controllers/rejection-master/rejection-master.module';
 import { CancellationMasterModule } from './controllers/cancellation-master/cancellation-master.module';
 import { SapIntegrationModule } from './controllers/sap-integration/sap-integration.module';
+import { WeighBridgeModule } from './controllers/weigh-bridge/weigh-bridge.module';
+import { TransactionReportModule } from './controllers/transaction-report/transaction-report.module';
+import { RejectionItemModule } from './controllers/rejection-item/rejection-item.module';
+import { CancellationItemModule } from './controllers/cancellation-item/cancellation-item.module';
 
 @Module({
   imports: [
@@ -43,6 +47,10 @@ import { SapIntegrationModule } from './controllers/sap-integration/sap-integrat
     RejectionMasterModule,
     CancellationMasterModule,
     SapIntegrationModule,
+    WeighBridgeModule,
+    TransactionReportModule,
+    RejectionItemModule,
+    CancellationItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
