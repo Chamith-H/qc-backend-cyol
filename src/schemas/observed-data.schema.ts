@@ -17,9 +17,6 @@ export class ObservedData {
 
   @Prop()
   checkedDate: string;
-
-  @Prop()
-  checkedStatus: string;
 }
 
 export const ObservedDataSchema = SchemaFactory.createForClass(ObservedData);

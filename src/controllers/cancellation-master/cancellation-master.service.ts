@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cancellation, CancellationDocument } from 'src/schemas/cancellation-master.schema';
-import { CreateCancellationDto } from './cancellation-master.dto';
+import { CreateCancellationDto, FilterCancellationDto } from './cancellation-master.dto';
 
 @Injectable()
 export class CancellationMasterService {
@@ -13,7 +13,7 @@ export class CancellationMasterService {
         return await newCancellation.save()
     }
 
-    async get_allCancellations() {
-        return await this.cancellationModel.find({})
+    async get_allCancellations(dto: FilterCancellationDto) {
+        return await this.cancellationModel.find(dto)
     }
 }

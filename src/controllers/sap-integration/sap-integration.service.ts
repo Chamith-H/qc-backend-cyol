@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as https from 'https';
+import { ItemParameterService } from '../item-parameter/item-parameter.service';
 
 @Injectable()
 export class SapIntegrationService {
-  constructor() {}
+  constructor(private readonly itemParameter: ItemParameterService) {}
 
   private sapBase = 'https://35.213.141.233:50000/b1s/v2';
 
@@ -58,13 +59,38 @@ export class SapIntegrationService {
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      return getPOs.data.value
+      return getPOs.data.value;
     } catch (error) {
       throw error;
     }
   }
 
-  async selected_purchaseOrder(token: string) {
-    
+  async selected_purchaseOrder(token: string, poNumber: string) {
+    const path = '/PurchaseOrders';
+    const id = `(${poNumber})`;
+    const logic = '?$select=DocumentLines';
+
+    try {
+      const selectedPo = await axios.get(this.sapBase + path + id + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      const itemData_set = selectedPo.data.DocumentLines.map(async (item) => {
+        console.log(item.ItemCode);
+
+        const itemCodeExact = await this.itemParameter.parameter_toToken(item.ItemCode);
+        console.log(itemCodeExact)
+
+        return {
+          itemCode: item.ItemCode,
+          lineNum: item.LineNum,
+        };
+      });
+
+      return itemData_set;
+    } catch (error) {
+      throw error;
+    }
   }
 }

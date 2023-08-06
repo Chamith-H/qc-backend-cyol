@@ -32,6 +32,13 @@ export class QcParameterService {
 
   //--> Get all QC parameters ---------------------------------------------------------------<
   async get_allQcParameters(dto: FilterQcParameterDto) {
+    if(dto.type === 'all') {
+      delete dto.type
+    }
+
+    if(dto.value === 'all') {
+      delete dto.value
+    }
     return await this.qcParameterModel
       .find(dto)
       .populate({ path: 'uom equipment' })

@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { RejectionMasterService } from './rejection-master.service';
-import { CreateRejectionMasterDto } from './rejection-master.dto';
+import { CreateRejectionMasterDto, FilterRejectionMasterDto } from './rejection-master.dto';
 
 @Controller('rejection-master')
 export class RejectionMasterController {
@@ -11,8 +11,8 @@ export class RejectionMasterController {
         return await this.rejectionMasterService.add_newRejectionMaster(dto)
     }
 
-    @Get('all')
-    async getRejections() {
-        return await this.rejectionMasterService.get_allRejectionMasters()
+    @Post('all')
+    async getRejections(@Body() dto: FilterRejectionMasterDto) {
+        return await this.rejectionMasterService.get_allRejectionMasters(dto)
     }
 }

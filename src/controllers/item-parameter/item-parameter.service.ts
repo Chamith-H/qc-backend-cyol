@@ -116,6 +116,10 @@ export class ItemParameterService {
     return (await this.itemParameterModel.findOne({ item: itemCode }))._id;
   }
 
+  async get_allCodes() {
+    return await this.itemParameterModel.find({}).select('itemCode');
+  }
+
   async get_allItemParameters(dto: FilterItemDto) {
     const itemParameters = await this.itemParameterModel
       .find(dto)
@@ -157,43 +161,71 @@ export class ItemParameterService {
   }
 
   async get_itemSelectedStage(dto: InspectionParameterDto) {
-    const parameterData = (
-      await this.itemParameterModel
-        .findOne({ itemCode: dto.itemCode })
-        .populate({
-          path: 'stages',
-          populate: {
-            path: 'parameterData',
-            populate: { path: 'parameterId' },
-          },
-        })
-        .exec()
-    );
+    const parameterData = await this.itemParameterModel
+      .findOne({ itemCode: dto.itemCode })
+      .populate({
+        path: 'stages',
+        populate: {
+          path: 'parameterData',
+          populate: { path: 'parameterId' },
+        },
+      })
+      .exec();
 
-    if(parameterData === null) {
-      return []
+    if (parameterData === null) {
+      return [];
     }
 
     const selected_stageParameters = parameterData.stages.find(
       (stage) => stage.stageName === dto.stage,
     );
 
-    if(selected_stageParameters === null || selected_stageParameters === undefined) {
-      return []
+    if (
+      selected_stageParameters === null ||
+      selected_stageParameters === undefined
+    ) {
+      return [];
     }
 
     return selected_stageParameters.parameterData;
   }
 
+  async parameter_toToken(itemCode: string) {
+    try {
+      const itemParameter = await this.itemParameterModel.find({
+        itemCode: itemCode,
+      });
+
+      if (itemParameter === null) {
+        throw new Error();
+      }
+
+      const all_stages = (
+        await this.itemParameterModel
+          .findOne({ itemCode: itemCode })
+          .populate({ path: 'stages' })
+          .exec()
+      ).stages;
+
+      if (all_stages.some((stage) => stage.stageName === 'Token')) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  }
+
   async inspectionParameters(dto: InspectionParameterDto) {
-    const stages = (
+    const all_stages = (
       await this.itemParameterModel
         .findOne({ itemCode: dto.itemCode })
         .populate({ path: 'stages' })
         .exec()
     ).stages;
 
-    const selected_stageParameters = stages.find(
+    const selected_stageParameters = all_stages.find(
       (stage) => stage.stageName === dto.stage,
     ).parameterData;
 

@@ -5,6 +5,7 @@ import {
   ObservedData,
   ObservedDataSchema,
 } from 'src/schemas/observed-data.schema';
+import { ObservedDataController } from './observed-data.controller';
 
 @Module({
   imports: [
@@ -14,5 +15,6 @@ import {
   ],
   providers: [ObservedDataService],
   exports: [ObservedDataService],
+  controllers: [ObservedDataController],
 })
 export class ObservedDataModule {}

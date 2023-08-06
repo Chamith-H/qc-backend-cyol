@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Rejection, RejectionDocument } from 'src/schemas/rejection-master.schema';
-import { CreateRejectionMasterDto } from './rejection-master.dto';
+import { CreateRejectionMasterDto, FilterRejectionMasterDto } from './rejection-master.dto';
 
 @Injectable()
 export class RejectionMasterService {
@@ -13,7 +13,7 @@ export class RejectionMasterService {
         return await newRejection.save()
     }
 
-    async get_allRejectionMasters() {
-        return await this.rejectionModel.find({})
+    async get_allRejectionMasters(dto: FilterRejectionMasterDto) {
+        return await this.rejectionModel.find(dto)
     }
 }

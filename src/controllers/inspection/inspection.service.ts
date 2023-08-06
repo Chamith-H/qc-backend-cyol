@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Inspection, InspectionDocument } from 'src/schemas/inspection.schema';
-import { CreateInspectionDto, FilterInspectionDto } from './inspection.dto';
+import { CreateInspectionDto, FilterInspectionDto, SelectInspectionDto } from './inspection.dto';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
 import { BatchOriginService } from '../batch-origin/batch-origin.service';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
@@ -71,18 +71,21 @@ export class InspectionService {
       delete dto.transaction;
     }
 
+    if(dto.date) {
+      dto.date = dto.date.slice(0, 10)
+    }
+
     return await this.inspectionModel.find(dto).sort({ number: -1 }).exec();
   }
 
-  async get_selectedInspection() {
+  async get_selectedInspection(dto: SelectInspectionDto) {
     return await this.inspectionModel
-      .find({})
-      .sort({ number: -1 })
+      .findOne({_id: dto.inspectId})
       .populate({
         path: 'qualityChecking',
         populate: {
           path: 'standardData',
-          populate: { path: 'parameter', populate: { path: 'uom equipment' } },
+          populate: { path: 'parameterId', populate: { path: 'uom equipment' } },
         },
       })
       .exec();

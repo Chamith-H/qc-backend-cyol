@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { CancellationMasterService } from './cancellation-master.service';
-import { CreateCancellationDto } from './cancellation-master.dto';
+import { CreateCancellationDto, FilterCancellationDto } from './cancellation-master.dto';
 
 @Controller('cancellation-master')
 export class CancellationMasterController {
@@ -11,8 +11,8 @@ export class CancellationMasterController {
         return await this.cancellationMasterService.add_newCancellationMaster(dto)
     }
 
-    @Get('all')
-    async getCancellations() {
-        return await this.cancellationMasterService.get_allCancellations()
+    @Post('all')
+    async getCancellations(@Body() dto: FilterCancellationDto) {
+        return await this.cancellationMasterService.get_allCancellations(dto)
     }
 }

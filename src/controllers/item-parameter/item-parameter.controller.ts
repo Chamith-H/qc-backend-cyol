@@ -11,6 +11,11 @@ export class ItemParameterController {
         return await this.itemParameterService.add_newItemParameter(dto)
     }
 
+    @Get('codes')
+    async getItemCodes() {
+        return await this.itemParameterService.get_allCodes()
+    }
+
     @Post('all')
     async getItemParameters(@Body() dto: FilterItemDto) {
         return await this.itemParameterService.get_allItemParameters(dto)
