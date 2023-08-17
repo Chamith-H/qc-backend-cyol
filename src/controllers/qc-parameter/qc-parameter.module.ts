@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   QcParameter,
   QcParameterSchema,
-} from '../../schemas/qc-parameter.schema';
+} from '../../schemas/qc-parameter/qc-parameter.schema';
 
 @Module({
   imports: [
@@ -15,6 +15,6 @@ import {
   ],
   controllers: [QcParameterController],
   providers: [QcParameterService],
-  exports: [QcParameterService]
+  exports: [QcParameterService],
 })
 export class QcParameterModule {}

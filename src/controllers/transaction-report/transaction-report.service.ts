@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   TransactionReport,
   TransactionReportDocument,
-} from 'src/schemas/transaction-report.schema';
+} from 'src/schemas/inspection/transaction-report.schema';
 import {
   CreateReportDto,
   SelectedTransactionDto,

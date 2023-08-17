@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTokenDto } from './token.dto';
+import { CreateTokenDto, FilterTokenDto } from './token.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Token, TokenDocument } from 'src/schemas/token.schema';
+import { Token, TokenDocument } from 'src/schemas/origin/token.schema';
 import { Model } from 'mongoose';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
@@ -19,24 +19,25 @@ export class TokenService {
   async create_newToken(dto: CreateTokenDto) {
     const tokenData = await this.requestGenerater.create_NewRequest(
       this.tokenModel,
-      'TOKEN',
+      'TKN',
     );
 
     const docOriginItems = await Promise.all(
       dto.items.map(async (item) => {
-
         const inspectData = {
           baseDocNo: tokenData.requestId,
           baseDocType: 'Token',
           refDocNo: dto.poNumber,
           refDocType: 'PO',
-          itemCode: item.itemCode,
+          itemCode: item.token,
           line: item.line,
-          qcRequest: 'Pending'
-        }
-        
-        return this.docOriginService.create_docOrigin(inspectData)
+          qcRequest: 'Pending',
+          newRequest: '',
+          transferor: '',
+          transferDate: '',
+        };
 
+        return this.docOriginService.create_docOrigin(inspectData);
       }),
     );
 
@@ -53,7 +54,11 @@ export class TokenService {
     return await newToken.save();
   }
 
-  async get_allTokens() {
-    return await this.tokenModel.find({}).populate({path: 'docItems'})
+  async get_allTokens(dto: FilterTokenDto) {
+    return await this.tokenModel
+      .find(dto)
+      .populate({ path: 'docItems' })
+      .sort({ number: -1 })
+      .exec();
   }
 }

@@ -1,6 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Equipment, EquipmentDocument } from '../../schemas/equipment.schema';
+import {
+  Equipment,
+  EquipmentDocument,
+} from '../../schemas/qc-parameter/equipment.schema';
 import { Model } from 'mongoose';
 import { CreateEquipmentDto } from './equipment.dto';
 

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { ObservedDataDocument } from './observed-data.schema';
-import { DocOriginDocument } from './doc-origin.schema';
+import { DocOriginDocument } from '../origin/doc-origin.schema';
 
 export type InspectionDocument = Inspection & Document;
 @Schema()
@@ -12,8 +12,8 @@ export class Inspection {
   @Prop()
   requestId: string;
 
-  @Prop({type: String, ref: 'DocOrigin'})
-  docOrigin: DocOriginDocument['id']
+  @Prop({ type: String, ref: 'DocOrigin' })
+  docOrigin: DocOriginDocument['id'];
 
   @Prop()
   stage: string;
@@ -59,6 +59,9 @@ export class Inspection {
 
   @Prop()
   remarks: string;
+
+  @Prop()
+  code: string;
 
   @Prop()
   date: string;

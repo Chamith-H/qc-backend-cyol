@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   ItemParameter,
   ItemParameterSchema,
-} from 'src/schemas/item-parameter.schema';
+} from 'src/schemas/item-parameter/item-parameter.schema';
 import { StandardDataModule } from '../standard-data/standard-data.module';
 import { StageModule } from '../stage/stage.module';
 import { ObservedDataModule } from '../observed-data/observed-data.module';
@@ -17,10 +17,10 @@ import { ObservedDataModule } from '../observed-data/observed-data.module';
     ]),
     StandardDataModule,
     StageModule,
-    ObservedDataModule
+    ObservedDataModule,
   ],
   controllers: [ItemParameterController],
   providers: [ItemParameterService],
-  exports: [ItemParameterService]
+  exports: [ItemParameterService],
 })
 export class ItemParameterModule {}

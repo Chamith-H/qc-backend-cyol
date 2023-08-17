@@ -17,4 +17,7 @@ export class UpdateStatusDto {
 
   @IsNotEmpty()
   remarks: string;
+
+  @IsNotEmpty()
+  code: string;
 }

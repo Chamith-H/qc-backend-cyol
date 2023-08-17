@@ -21,4 +21,13 @@ export class CreateDocDto {
 
     @IsNotEmpty()
     qcRequest: string
+
+    @IsNotEmpty()
+    newRequest: string
+
+    @IsNotEmpty()
+    transferor: string
+
+    @IsNotEmpty()
+    transferDate: string
 }

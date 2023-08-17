@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Uom, UomDocument } from '../../schemas/uom.schema';
+import { Uom, UomDocument } from '../../schemas/qc-parameter/uom.schema';
 import { CreateUomDto } from './uom.dto';
 
 @Injectable()

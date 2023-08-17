@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 
 class DataDto {
     @IsString()
-    itemCode:string
+    token:string
 
     @IsNotEmpty()
     line: number

@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   ObservedData,
   ObservedDataSchema,
-} from 'src/schemas/observed-data.schema';
+} from 'src/schemas/inspection/observed-data.schema';
 import { ObservedDataController } from './observed-data.controller';
 
 @Module({

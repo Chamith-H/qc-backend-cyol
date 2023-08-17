@@ -10,13 +10,20 @@ import {
 import { RegisterDto, LoginDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
+import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get('access')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
+  check_accessControl() {
+    return { message: 'Success' };
+  }
+
   @Post('register')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
   async register(@Body() dto: RegisterDto) {
     return await this.authService.create_newUser(dto);
   }
@@ -33,7 +40,7 @@ export class AuthController {
   }
 
   @Get('selected/:id')
-  async user(@Param('id') id: string,) {
+  async user(@Param('id') id: string) {
     return await this.authService.get_selectedUser(id);
   }
 }

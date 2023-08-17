@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   Weighbridge,
   WeighbridgeSchema,
-} from 'src/schemas/weigh-bridge.schema';
+} from 'src/schemas/origin/weigh-bridge.schema';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 
 @Module({
@@ -16,6 +16,6 @@ import { RequestGenerater } from 'src/configs/shared/request.generater';
   ],
   controllers: [WeighBridgeController],
   providers: [WeighBridgeService, RequestGenerater],
-  exports: [WeighBridgeService]
+  exports: [WeighBridgeService],
 })
 export class WeighBridgeModule {}

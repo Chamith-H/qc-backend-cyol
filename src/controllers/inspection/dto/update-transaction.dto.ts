@@ -7,7 +7,7 @@ export class UpdateTransactionDto {
   inspectCode: string;
 
   @IsNotEmpty()
-  docOrigin: string
+  docOrigin: string;
 
   @IsNotEmpty()
   qcStatus: string;
@@ -25,11 +25,14 @@ export class UpdateTransactionDto {
   batch: string;
 
   @IsNotEmpty()
-  transaction: string
+  code: string;
 
   @IsNotEmpty()
-  transferor: string
+  transaction: string;
 
   @IsNotEmpty()
-  transactionDate: string
+  transferor: string;
+
+  @IsNotEmpty()
+  transactionDate: string;
 }

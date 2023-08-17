@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   ObservedData,
   ObservedDataDocument,
-} from 'src/schemas/observed-data.schema';
+} from 'src/schemas/inspection/observed-data.schema';
 import {
   CreateObservedDataDto,
   UpdateObservedDataDto,
@@ -30,7 +30,7 @@ export class ObservedDataService {
   }
 
   async update_ObservedData(dto: UpdateObservedDataDto) {
-    console.log(dto)
+    console.log(dto);
     const currentData = await this.observedDataModel.findOne({
       _id: dto.docId,
     });
@@ -39,7 +39,7 @@ export class ObservedDataService {
     }
 
     delete dto.docId;
-    console.log(dto)
+    console.log(dto);
 
     return await this.observedDataModel.updateOne(
       { _id: currentData._id },

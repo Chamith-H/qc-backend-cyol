@@ -24,11 +24,16 @@ import { WeighBridgeModule } from './controllers/weigh-bridge/weigh-bridge.modul
 import { TransactionReportModule } from './controllers/transaction-report/transaction-report.module';
 import { RejectionItemModule } from './controllers/rejection-item/rejection-item.module';
 import { CancellationItemModule } from './controllers/cancellation-item/cancellation-item.module';
+import { RejectionDataModule } from './controllers/rejection-data/rejection-data.module';
+import { RejectionActionModule } from './controllers/rejection-action/rejection-action.module';
+import { RejectionListModule } from './controllers/rejection-list/rejection-list.module';
+import { AccessControlModule } from './controllers/access-control/access-control.module';
+import { ProcessControlModule } from './controllers/process-control/process-control.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://chamith:12345@fulstack-training.dck8ac8.mongodb.net/cyolQC',
+      'mongodb+srv://chamith:9875@testdb.qzldlok.mongodb.net/cyolQC',
     ),
     AuthModule,
     RoleModule,
@@ -51,6 +56,11 @@ import { CancellationItemModule } from './controllers/cancellation-item/cancella
     TransactionReportModule,
     RejectionItemModule,
     CancellationItemModule,
+    RejectionDataModule,
+    RejectionActionModule,
+    RejectionListModule,
+    AccessControlModule,
+    ProcessControlModule,
   ],
   controllers: [AppController],
   providers: [AppService],

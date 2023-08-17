@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Stage, StageDocument } from 'src/schemas/stage.schema';
+import { Stage, StageDocument } from 'src/schemas/item-parameter/stage.schema';
 import { CreateStageDto, UpdateParameterDto } from './stage.dto';
 
 @Injectable()

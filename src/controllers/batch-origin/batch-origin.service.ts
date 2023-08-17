@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   BatchOrigin,
   BatchOriginDocument,
-} from 'src/schemas/batch-origin.schema';
+} from 'src/schemas/origin/batch-origin.schema';
 
 @Injectable()
 export class BatchOriginService {

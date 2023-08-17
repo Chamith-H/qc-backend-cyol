@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { DocOriginService } from './doc-origin.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DocOrigin, DocOriginSchema } from 'src/schemas/doc-origin.schema';
+import {
+  DocOrigin,
+  DocOriginSchema,
+} from 'src/schemas/origin/doc-origin.schema';
+import { DocOriginController } from './doc-origin.controller';
 
 @Module({
   imports: [
@@ -11,5 +15,6 @@ import { DocOrigin, DocOriginSchema } from 'src/schemas/doc-origin.schema';
   ],
   providers: [DocOriginService],
   exports: [DocOriginService],
+  controllers: [DocOriginController],
 })
 export class DocOriginModule {}

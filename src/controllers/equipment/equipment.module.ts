@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { EquipmentController } from './equipment.controller';
 import { EquipmentService } from './equipment.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Equipment, EquipmentSchema } from '../../schemas/equipment.schema';
+import {
+  Equipment,
+  EquipmentSchema,
+} from '../../schemas/qc-parameter/equipment.schema';
 
 @Module({
   imports: [

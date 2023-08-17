@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   BatchOrigin,
   BatchOriginSchema,
-} from 'src/schemas/batch-origin.schema';
+} from 'src/schemas/origin/batch-origin.schema';
 
 @Module({
   imports: [

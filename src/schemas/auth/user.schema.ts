@@ -1,4 +1,4 @@
-import { RoleDocument, RoleSchema } from 'src/schemas/role.schema';
+import { RoleDocument, RoleSchema } from 'src/schemas/auth/role.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

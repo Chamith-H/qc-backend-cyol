@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDocDto } from './doc-origin.dto';
+import { CreateDocDto, CreatedRequestDto } from './doc-origin.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DocOrigin, DocOriginDocument } from 'src/schemas/doc-origin.schema';
+import {
+  DocOrigin,
+  DocOriginDocument,
+} from 'src/schemas/origin/doc-origin.schema';
 
 @Injectable()
 export class DocOriginService {
@@ -22,7 +25,7 @@ export class DocOriginService {
     return {
       itemCode: docOrigin.itemCode,
       stage: docOrigin.baseDocType,
-      baseDoc: docOrigin.baseDocNo
+      baseDoc: docOrigin.baseDocNo,
     };
   }
 
@@ -33,5 +36,11 @@ export class DocOriginService {
       refDoc: docOrigin.refDocNo,
       line: docOrigin.line,
     };
+  }
+
+  async update_OriginTransaction(dto: CreatedRequestDto) {
+    const id = dto.originId;
+    delete dto.originId;
+    return await this.docOriginModel.updateOne({ _id: id }, { $set: dto });
   }
 }

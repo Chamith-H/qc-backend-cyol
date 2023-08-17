@@ -30,4 +30,14 @@ export class InspectionController {
   async updateTransaction(@Body() dto: UpdateTransactionDto) {
     return await this.inspectionService.update_Transaction(dto)
   }
+
+  @Post('get-selecter') 
+  async selectedMinimalData(@Body() dto: SelectInspectionDto) {
+    return await this.inspectionService.get_minimalData(dto)
+  }
+
+  @Post('second-inspection')
+  async createSecondInspection(@Body() dto: SelectInspectionDto) {
+    return await this.inspectionService.create_newRequest_to_currentBatch(dto)
+  }
 }

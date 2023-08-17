@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   QcParameter,
   QcParameterDocument,
-} from '../../schemas/qc-parameter.schema';
+} from '../../schemas/qc-parameter/qc-parameter.schema';
 import { Model } from 'mongoose';
 import { CreateQcParameterDto, FilterQcParameterDto } from './qc-parameter.dto';
 
@@ -32,12 +32,12 @@ export class QcParameterService {
 
   //--> Get all QC parameters ---------------------------------------------------------------<
   async get_allQcParameters(dto: FilterQcParameterDto) {
-    if(dto.type === 'all') {
-      delete dto.type
+    if (dto.type === 'all') {
+      delete dto.type;
     }
 
-    if(dto.value === 'all') {
-      delete dto.value
+    if (dto.value === 'all') {
+      delete dto.value;
     }
     return await this.qcParameterModel
       .find(dto)

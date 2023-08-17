@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as https from 'https';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
 
 @Injectable()
 export class SapIntegrationService {
-  constructor(private readonly itemParameter: ItemParameterService) {}
+  constructor(private readonly itemParameterService: ItemParameterService) {}
 
   private sapBase = 'https://35.213.141.233:50000/b1s/v2';
 
@@ -76,19 +76,34 @@ export class SapIntegrationService {
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      const itemData_set = selectedPo.data.DocumentLines.map(async (item) => {
-        console.log(item.ItemCode);
+      const itemData_set = await Promise.all(
+        selectedPo.data.DocumentLines.map(async (item) => {
+          const checkingDto = {
+            itemCode: item.ItemCode,
+            line: item.LineNum,
+            stage: 'Token',
+          };
 
-        const itemCodeExact = await this.itemParameter.parameter_toToken(item.ItemCode);
-        console.log(itemCodeExact)
+          const getList = await this.itemParameterService.get_itemSelectedStage(
+            checkingDto,
+          );
+          if (getList.length === 0) {
+            return null;
+          } else {
+            return {
+              ItemCode: item.ItemCode,
+              LineNum: item.LineNum,
+            };
+          }
+        }),
+      );
 
-        return {
-          itemCode: item.ItemCode,
-          lineNum: item.LineNum,
-        };
-      });
+      const finalArray = itemData_set.filter((item) => item !== null);
+      if (finalArray.length === 0) {
+        throw new BadRequestException('This PO number has no QC-items');
+      }
 
-      return itemData_set;
+      return finalArray;
     } catch (error) {
       throw error;
     }

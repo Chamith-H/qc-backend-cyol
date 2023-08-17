@@ -19,11 +19,11 @@ export class QcParameter {
   @Prop()
   value: string;
 
-  @Prop({type: String, ref: 'Uom'})
-  uom: UomDocument['_id']
+  @Prop({ type: String, ref: 'Uom' })
+  uom: UomDocument['_id'];
 
-  @Prop({type: String, ref: 'Equipment'})
-  equipment: EquipmentDocument['_id']
+  @Prop({ type: String, ref: 'Equipment' })
+  equipment: EquipmentDocument['_id'];
 }
 
 export const QcParameterSchema = SchemaFactory.createForClass(QcParameter);

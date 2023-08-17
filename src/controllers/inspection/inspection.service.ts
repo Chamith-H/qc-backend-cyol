@@ -1,7 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Inspection, InspectionDocument } from 'src/schemas/inspection.schema';
+import {
+  Inspection,
+  InspectionDocument,
+} from 'src/schemas/inspection/inspection.schema';
 import {
   CreateInspectionDto,
   FilterInspectionDto,
@@ -15,6 +18,8 @@ import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { DocOriginService } from '../doc-origin/doc-origin.service';
 import { WeighBridgeService } from '../weigh-bridge/weigh-bridge.service';
 import { TransactionReportService } from '../transaction-report/transaction-report.service';
+import { RejectionItemService } from '../rejection-item/rejection-item.service';
+import { CancellationItemService } from '../cancellation-item/cancellation-item.service';
 
 @Injectable()
 export class InspectionService {
@@ -26,7 +31,9 @@ export class InspectionService {
     private readonly requestGenerater: RequestGenerater,
     private readonly docOriginService: DocOriginService,
     private readonly weighBridgeService: WeighBridgeService,
-    private readonly reportService: TransactionReportService
+    private readonly reportService: TransactionReportService,
+    private readonly rejectionItemService: RejectionItemService,
+    private readonly cancellationItemService: CancellationItemService,
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -64,6 +71,7 @@ export class InspectionService {
       transactionDate: '',
       description: '',
       remarks: '',
+      code: '',
       date: '2023-04-16',
     };
 
@@ -111,6 +119,8 @@ export class InspectionService {
     const id = dto.inspectId;
     delete dto.inspectId;
 
+    console.log(dto);
+
     const updateStatus = await this.inspectionModel.updateOne(
       { _id: id },
       { $set: dto },
@@ -133,6 +143,15 @@ export class InspectionService {
       throw new BadRequestException('This request already transfered');
     }
 
+    if (dto.qcStatus !== 'Rejected') {
+      const updateRejection =
+        await this.rejectionItemService.exist_FinderUpdate({
+          batch: dto.batch,
+          date: dto.transactionDate,
+          origin: dto.inspectCode,
+        });
+    }
+
     if (dto.stage === 'Token') {
       return await this.find_transferSectionTOKEN(dto);
     }
@@ -140,7 +159,7 @@ export class InspectionService {
 
   async find_transferSectionTOKEN(dto: UpdateTransactionDto) {
     if (dto.qcStatus === 'Approved') {
-      const refData = await this.docOriginService.get_subData(dto.docOrigin)
+      const refData = await this.docOriginService.get_subData(dto.docOrigin);
 
       const weibridgeDto = {
         tokenNo: dto.baseDocNo,
@@ -148,18 +167,104 @@ export class InspectionService {
         itemCode: dto.itemCode,
         line: refData.line,
         batch: dto.batch,
-        date: dto.transactionDate
-      }
+        date: dto.transactionDate,
+      };
 
-      const createdResponse = await this.weighBridgeService.create_weighBridgeRequest(weibridgeDto)
+      const createdResponse =
+        await this.weighBridgeService.create_weighBridgeRequest(weibridgeDto);
+      return await this.create_newTransactionReport(dto, createdResponse);
+    } else if (dto.qcStatus === 'Rejected') {
+      const rejectDto = {
+        itemCode: dto.itemCode,
+        batch: dto.batch,
+        stage: dto.stage,
+        origin: dto.inspectCode,
+        rejectedDate: dto.transactionDate,
+        rejectCode: dto.code,
+      };
 
-      const reportDto = {
-        requestNo: dto.inspectId,
-        requestCode: dto.inspectCode,
-        transferTo: createdResponse.transferTo,
-        newRequest: createdResponse.newRequest
-      }
-      return await this.reportService.create_newTransaction(reportDto)
+      const createdResponse =
+        await this.rejectionItemService.create_rejectionRequest(rejectDto);
+      return await this.create_newTransactionReport(dto, createdResponse);
+    } else if (dto.qcStatus === 'Cancelled') {
+      const cancelDto = {
+        docOrigin: dto.docOrigin,
+        cancelDate: dto.transactionDate,
+        stage: dto.stage,
+        baseDocNo: dto.baseDocNo,
+        itemCode: dto.itemCode,
+        batchNo: dto.batch,
+        code: dto.code,
+      };
+
+      const createdResponse =
+        await this.cancellationItemService.create_newCancellationitem(
+          cancelDto,
+        );
+      return await this.create_newTransactionReport(dto, createdResponse);
     }
+  }
+
+  async create_newTransactionReport(requestStatus: any, responseStatus: any) {
+    const reportDto = {
+      requestNo: requestStatus.inspectId,
+      requestCode: requestStatus.inspectCode,
+      transferTo: responseStatus.transferTo,
+      newRequest: responseStatus.newRequest,
+    };
+    return await this.reportService.create_newTransaction(reportDto);
+  }
+
+  async get_minimalData(dto: SelectInspectionDto) {
+    return await this.inspectionModel.findOne({ requestId: dto.inspectId });
+  }
+
+  async get_selectedRequest(requestNo: string) {
+    return await this.inspectionModel.findOne({ requestId: requestNo });
+  }
+
+  async create_newRequest_to_currentBatch(dto: SelectInspectionDto) {
+    const needData = await this.inspectionModel.findOne({
+      requestId: dto.inspectId,
+    });
+
+    const inspectItem = await this.docOriginService.get_selectedOrigin(
+      needData.docOrigin,
+    );
+
+    const checkingData = await this.itemParameterService.inspectionParameters(
+      inspectItem,
+    );
+
+    const requestData = await this.requestGenerater.create_NewRequest(
+      this.inspectionModel,
+      'REQ',
+    );
+
+    const inspectionData = {
+      number: requestData.requestNumber,
+      requestId: requestData.requestId,
+      docOrigin: needData.docOrigin,
+      stage: inspectItem.stage,
+      itemCode: inspectItem.itemCode,
+      baseDoc: inspectItem.baseDoc,
+      batch: needData.batch,
+      qualityChecking: checkingData,
+      quantity: '_',
+      warehouse: '_',
+      qcStatus: 'Pending',
+      transaction: 'Pending',
+      inspector: '',
+      inspectionDate: '',
+      transferor: '',
+      transactionDate: '',
+      description: '',
+      remarks: '',
+      code: '',
+      date: '2023-04-16',
+    };
+
+    const newInspection = new this.inspectionModel(inspectionData);
+    return newInspection.save();
   }
 }

@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   TransactionReport,
   TransactionReportSchema,
-} from 'src/schemas/transaction-report.schema';
+} from 'src/schemas/inspection/transaction-report.schema';
 
 @Module({
   imports: [

@@ -25,6 +25,15 @@ export class DocOrigin {
 
   @Prop()
   qcRequest: string;
+
+  @Prop()
+  newRequest: string;
+
+  @Prop()
+  transferor: string;
+
+  @Prop()
+  transferDate: string;
 }
 
 export const DocOriginSchema = SchemaFactory.createForClass(DocOrigin);

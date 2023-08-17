@@ -6,7 +6,7 @@ import {
 import { LoginDto, RegisterDto } from './auth.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { User, UserDocument } from 'src/schemas/auth/user.schema';
 import { JwtProvider } from './jwt/jwt.provider';
 import { JwtPayload } from './jwt/jwt.payload';
 
@@ -19,9 +19,11 @@ export class AuthService {
 
   //--> Validate user in database from JWT strategy --------------------------------------------------<
   async validateUser(payload: JwtPayload) {
-    const currentUser = await this.userModel.findOne({
-      userID: payload.userId,
-    });
+    const currentUser = await this.userModel
+      .findOne({
+        userID: payload.userId,
+      })
+      .populate({ path: 'role' });
     if (currentUser === null) {
       throw new UnauthorizedException('Unauthorized user');
     }
@@ -42,7 +44,9 @@ export class AuthService {
 
   //--> Login from currennt saved user ---------------------------------------------------------------<
   async login_currentUser(dto: LoginDto) {
-    const existUser = await this.userModel.findOne({ userID: dto.userID });
+    const existUser = await this.userModel
+      .findOne({ userID: dto.userID })
+      .populate({ path: 'role' });
     if (existUser === null) {
       throw new UnauthorizedException('User ID not found');
     }
@@ -54,11 +58,11 @@ export class AuthService {
     const payload: JwtPayload = {
       userId: existUser.userID,
       name: existUser.name,
-      role: 2,
+      role: existUser.role.roleName,
     };
 
     const token = await this.jwtProvider.generateToken(payload);
-    return {statusCode: 200, token: token}
+    return { statusCode: 200, token: token };
   }
 
   //--> Getting users all data without the password --------------------------------------------------<

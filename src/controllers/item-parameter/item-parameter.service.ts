@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import {
   ItemParameter,
   ItemParameterDocument,
-} from 'src/schemas/item-parameter.schema';
+} from 'src/schemas/item-parameter/item-parameter.schema';
 import {
   CreateItemParameterDto,
   FilterItemDto,

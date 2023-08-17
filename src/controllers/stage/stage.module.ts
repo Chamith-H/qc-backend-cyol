@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { StageService } from './stage.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Stage, StageSchema } from 'src/schemas/stage.schema';
+import { Stage, StageSchema } from 'src/schemas/item-parameter/stage.schema';
 
 @Module({
   imports: [
