@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class SelectedShiftDto {
+export class SelectedTimeSlotDto {
     @IsNotEmpty()
-    shiftId: string;
+    slotId: string;
 }

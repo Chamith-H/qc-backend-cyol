@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { ProcessControlService } from './process-control.service';
-import { CreateProcessControlDto, SelectedProcessControlDto } from './process-control.dto';
+import { CreateProcessControlDto, CreateTimeProcessDto, SelectedProcessControlDto, SelectedTimeSlotDto, UpdateVerifiedDataDto } from './process-control.dto';
+import { SelectedShiftDto } from './dto/selected-shift.dto';
 
 @Controller('process-control')
 export class ProcessControlController {
@@ -19,5 +20,25 @@ export class ProcessControlController {
   @Post('process-selected')
   async getSelectedProcess(@Body() dto: SelectedProcessControlDto) {
     return await this.processControlService.get_selectedProcess(dto)
+  }
+
+  @Post('create-time')
+  async createInspectTime(@Body() dto: CreateTimeProcessDto) {
+    return await this.processControlService.create_inspectTime(dto)
+  }
+
+  @Post('shift-selected')
+  async createNewShift(@Body() dto: SelectedShiftDto) {
+    return await this.processControlService.get_selectedShift(dto)
+  }
+
+  @Post('slot-selected')
+  async getTimeSlot(@Body() dto: SelectedTimeSlotDto) {
+    return await this.processControlService.get_inspectionTimeSlot(dto)
+  }
+
+  @Post('update-verifier')
+  async updateVerifier(@Body() dto: UpdateVerifiedDataDto) {
+    return await this.processControlService.update_verifiedData(dto)
   }
 }

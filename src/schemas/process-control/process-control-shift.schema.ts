@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { ProcessControlTimeDocument } from './process-control-time.schema';
 
 export type ProcessControlShiftDocument = ProcessControlShift & Document;
 
 @Schema()
 export class ProcessControlShift {
-
   @Prop()
-  origin: string
+  origin: string;
 
   @Prop()
   type: string;
 
-  @Prop()
-  times: any[] // edit here
+  @Prop({ type: [{ type: String, ref: 'ProcessControlTime' }] })
+  times: ProcessControlTimeDocument['id'][];
 
   @Prop()
   createdBy: string;

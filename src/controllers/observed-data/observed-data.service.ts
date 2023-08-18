@@ -39,7 +39,6 @@ export class ObservedDataService {
     }
 
     delete dto.docId;
-    console.log(dto);
 
     return await this.observedDataModel.updateOne(
       { _id: currentData._id },

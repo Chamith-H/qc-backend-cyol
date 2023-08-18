@@ -1,8 +1,4 @@
 import {
-  ProcessControlData,
-  ProcessControlDataSchema,
-} from './../../schemas/process-control/process-control-data.schema';
-import {
   ProcessControlShift,
   ProcessControlShiftSchema,
 } from './../../schemas/process-control/process-control-shift.schema';
@@ -20,6 +16,7 @@ import {
 } from 'src/schemas/process-control/process-control-time.schema';
 import { RequestGenerater } from 'src/configs/shared/request.generater';
 import { BatchOriginModule } from '../batch-origin/batch-origin.module';
+import { ItemParameterModule } from '../item-parameter/item-parameter.module';
 
 @Module({
   imports: [
@@ -32,11 +29,9 @@ import { BatchOriginModule } from '../batch-origin/batch-origin.module';
     MongooseModule.forFeature([
       { name: ProcessControlTime.name, schema: ProcessControlTimeSchema },
     ]),
-    MongooseModule.forFeature([
-      { name: ProcessControlData.name, schema: ProcessControlDataSchema },
-    ]),
 
-    BatchOriginModule
+    BatchOriginModule,
+    ItemParameterModule,
   ],
   controllers: [ProcessControlController],
   providers: [ProcessControlService, RequestGenerater],

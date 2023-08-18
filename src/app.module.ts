@@ -29,6 +29,7 @@ import { RejectionActionModule } from './controllers/rejection-action/rejection-
 import { RejectionListModule } from './controllers/rejection-list/rejection-list.module';
 import { AccessControlModule } from './controllers/access-control/access-control.module';
 import { ProcessControlModule } from './controllers/process-control/process-control.module';
+import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { ProcessControlModule } from './controllers/process-control/process-cont
     RejectionListModule,
     AccessControlModule,
     ProcessControlModule,
+    TimeSlotModule,
   ],
   controllers: [AppController],
   providers: [AppService],
