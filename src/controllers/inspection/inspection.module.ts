@@ -14,6 +14,7 @@ import { WeighBridgeModule } from '../weigh-bridge/weigh-bridge.module';
 import { TransactionReportModule } from '../transaction-report/transaction-report.module';
 import { RejectionItemModule } from '../rejection-item/rejection-item.module';
 import { CancellationItemModule } from '../cancellation-item/cancellation-item.module';
+import { RejectionDataModule } from '../rejection-data/rejection-data.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CancellationItemModule } from '../cancellation-item/cancellation-item.m
     TransactionReportModule,
     RejectionItemModule,
     CancellationItemModule,
+    RejectionDataModule
   ],
   controllers: [InspectionController],
   providers: [InspectionService, RequestGenerater],

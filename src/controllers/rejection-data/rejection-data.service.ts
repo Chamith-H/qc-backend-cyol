@@ -262,4 +262,9 @@ export class RejectionDataService {
 
     return await this.rejectionListService.createNewTable(rejectTable);
   }
+
+  async get_pendingCount() {
+    const pendings = await this.rejectionDataModel.find({status: 'Pending'})
+    return pendings.length
+  }
 }

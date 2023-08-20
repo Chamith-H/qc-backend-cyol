@@ -9,8 +9,8 @@ export class Role {
   @Prop()
   roleName: string;
 
-  @Prop()
-  permissions: any[];
+  @Prop({ type: [{ type: String, ref: 'Permission' }] })
+  permissions: PermissionDocument['_id'][];
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

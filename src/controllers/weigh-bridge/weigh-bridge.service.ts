@@ -63,6 +63,16 @@ export class WeighBridgeService {
   }
 
   async create_GRN(dto: UpdateWeightQuantityDto) {
-    return await this.weighbridgeModel.updateOne({_id: dto.requestId}, {$set: {transaction: 'Completed'}})
+    return await this.weighbridgeModel.updateOne(
+      { _id: dto.requestId },
+      { $set: { transaction: 'Completed' } },
+    );
+  }
+
+  async get_pendingCount() {
+    const pendingInspections = (
+      await this.weighbridgeModel.find({ transaction: 'Pending' })
+    ).length;
+    return pendingInspections;
   }
 }

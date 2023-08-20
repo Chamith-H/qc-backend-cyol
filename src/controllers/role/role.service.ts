@@ -31,4 +31,8 @@ export class RoleService {
 
     return roles;
   }
+
+  async get_permissions_toRole(dto) {
+
+  }
 }

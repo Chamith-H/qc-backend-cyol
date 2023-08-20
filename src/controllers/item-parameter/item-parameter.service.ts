@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -10,7 +14,9 @@ import {
   FilterItemDto,
   InspectionParameterDto,
   SelectedItemDto,
+  SelectedStageDto,
   UpdateStageDto,
+  ValidateItemValueDto,
 } from './item-parameter.dto';
 import { StandardDataService } from '../standard-data/standard-data.service';
 import { StageService } from '../stage/stage.service';
@@ -237,5 +243,134 @@ export class ItemParameterService {
         );
       }),
     );
+  }
+
+  async get_itemCodes_SelectedStage(dto: SelectedStageDto) {
+    const items = await this.itemParameterModel
+      .find({})
+      .populate({ path: 'stages' });
+    const selectedItems = items.filter((item) => {
+      const stageItems = item.stages.find(
+        (stage) => stage.stageName === dto.stage,
+      );
+
+      return stageItems !== undefined;
+    });
+
+    return selectedItems.map((item) => {
+      return { code: item.itemCode };
+    });
+  }
+
+  async validate_masterData(dto: ValidateItemValueDto) {
+    if (dto.value === 'Range' && dto.type === 'Numaric') {
+      if (dto.minValue === undefined) {
+        throw new BadRequestException('Min value cannot be empty');
+      }
+      if (dto.maxValue === undefined) {
+        throw new BadRequestException('Max value cannot be empty');
+      }
+      if (dto.stdValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.minValue)) {
+        throw new BadRequestException('Min value must be numaric');
+      }
+      if (isNaN(dto.maxValue)) {
+        throw new BadRequestException('Max value must be numaric');
+      }
+      if (isNaN(dto.stdValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+    }
+
+    if (dto.value === 'Fixed' && dto.type === 'Numaric') {
+      if (dto.stdValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.stdValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+    }
+
+    if (dto.value === 'Comparison' && dto.type === 'Numaric') {
+      if (dto.compareValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.compareValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+    }
+
+    if (dto.value === 'Range' && dto.type === 'Percentage') {
+      if (dto.minValue === undefined) {
+        throw new BadRequestException('Min value cannot be empty');
+      }
+      if (dto.maxValue === undefined) {
+        throw new BadRequestException('Max value cannot be empty');
+      }
+      if (dto.stdValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.minValue)) {
+        throw new BadRequestException('Min value must be numaric');
+      }
+      if (isNaN(dto.maxValue)) {
+        throw new BadRequestException('Max value must be numaric');
+      }
+      if (isNaN(dto.stdValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+
+      if (dto.minValue < 0 || dto.minValue > 100) {
+        throw new BadRequestException(
+          'Min value percentage must be in the range 0-100',
+        );
+      }
+
+      if (dto.maxValue < 0 || dto.maxValue > 100) {
+        throw new BadRequestException(
+          'Max value percentage must be in the range 0-100',
+        );
+      }
+
+      if (dto.stdValue < 0 || dto.stdValue > 100) {
+        throw new BadRequestException(
+          'Standard value percentage must be in the range 0-100',
+        );
+      }
+    }
+
+    if (dto.value === 'Fixed' && dto.type === 'Percentage') {
+      if (dto.stdValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.stdValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+
+      if (dto.stdValue < 0 || dto.stdValue > 100) {
+        throw new BadRequestException(
+          'Standard value percentage must be in the range 0-100',
+        );
+      }
+    }
+
+    if (dto.value === 'Comparison' && dto.type === 'Percentage') {
+      if (dto.stdValue === undefined) {
+        throw new BadRequestException('Standard value cannot be empty');
+      }
+      if (isNaN(dto.stdValue)) {
+        throw new BadRequestException('Standard value must be numaric');
+      }
+
+      if (dto.stdValue < 0 || dto.stdValue > 100) {
+        throw new BadRequestException(
+          'Standard value percentage must be in the range 0-100',
+        );
+      }
+    }
+
+    return { message: 'All things ok' };
   }
 }

@@ -20,6 +20,7 @@ import { WeighBridgeService } from '../weigh-bridge/weigh-bridge.service';
 import { TransactionReportService } from '../transaction-report/transaction-report.service';
 import { RejectionItemService } from '../rejection-item/rejection-item.service';
 import { CancellationItemService } from '../cancellation-item/cancellation-item.service';
+import { RejectionDataService } from '../rejection-data/rejection-data.service';
 
 @Injectable()
 export class InspectionService {
@@ -34,6 +35,7 @@ export class InspectionService {
     private readonly reportService: TransactionReportService,
     private readonly rejectionItemService: RejectionItemService,
     private readonly cancellationItemService: CancellationItemService,
+    private readonly rejectionDataService: RejectionDataService,
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -266,5 +268,26 @@ export class InspectionService {
 
     const newInspection = new this.inspectionModel(inspectionData);
     return newInspection.save();
+  }
+
+  async get_inspectionCounter() {
+    const pendingInspections = (
+      await this.inspectionModel.find({ qcStatus: 'Pending' })
+    ).length;
+
+    const pendingWeighBridge = await this.weighBridgeService.get_pendingCount();
+
+    const pendingRejections =
+      await this.rejectionDataService.get_pendingCount();
+
+    const pendingCancellations =
+      await this.cancellationItemService.get_cancellationCount();
+
+    return {
+      inspections: pendingInspections,
+      weighBridges: pendingWeighBridge,
+      rejections: pendingRejections,
+      cancellations: pendingCancellations,
+    };
   }
 }

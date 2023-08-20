@@ -40,4 +40,9 @@ export class InspectionController {
   async createSecondInspection(@Body() dto: SelectInspectionDto) {
     return await this.inspectionService.create_newRequest_to_currentBatch(dto)
   }
+
+  @Get('count')
+  async getRequestCounter() {
+    return await this.inspectionService.get_inspectionCounter()
+  }
 }

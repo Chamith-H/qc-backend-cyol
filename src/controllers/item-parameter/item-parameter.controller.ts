@@ -5,6 +5,8 @@ import {
   FilterItemDto,
   InspectionParameterDto,
   SelectedItemDto,
+  SelectedStageDto,
+  ValidateItemValueDto,
 } from './item-parameter.dto';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
 import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
@@ -43,5 +45,15 @@ export class ItemParameterController {
   @Post('choosed')
   async selectedItemsStage(@Body() dto: InspectionParameterDto) {
     return await this.itemParameterService.get_itemSelectedStage(dto);
+  }
+
+  @Post('validate')
+  async validateValues(@Body() dto: ValidateItemValueDto) {
+    return await this.itemParameterService.validate_masterData(dto);
+  }
+
+  @Post('selected-stage')
+  async selectedStageParameters(@Body() dto: SelectedStageDto) {
+    return await this.itemParameterService.get_itemCodes_SelectedStage(dto)
   }
 }
