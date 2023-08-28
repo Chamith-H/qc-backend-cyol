@@ -16,7 +16,7 @@ export class ItemParameterController {
   constructor(private readonly itemParameterService: ItemParameterService) {}
 
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('3'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('3'))
   check_accessControl() {
     return { message: 'success' };
   }

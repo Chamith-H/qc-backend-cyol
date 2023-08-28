@@ -23,7 +23,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
   async register(@Body() dto: RegisterDto) {
     return await this.authService.create_newUser(dto);
   }
