@@ -17,6 +17,7 @@ export class RejectionActionService {
     private readonly rejectActionModel: Model<RejectionActionDocument>,
   ) {}
 
+  //Get data
   async create_rejectAction(dto: CreateRejectActionDto) {
     const newAction = new this.rejectActionModel(dto);
     const response = await newAction.save();
