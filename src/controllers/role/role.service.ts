@@ -18,7 +18,16 @@ export class RoleService {
     if (existRole !== null) {
       throw new BadRequestException('This role name is already exist');
     }
-    const newRole = new this.roleModel(dto);
+
+    const permissionObject = {
+      permissions: dto.permissions.map((permission) => permission.id),
+    };
+
+    const createRole = {
+      roleName: dto.roleName,
+      permissions: permissionObject.permissions,
+    };
+    const newRole = new this.roleModel(createRole);
     return await newRole.save();
   }
 
@@ -30,9 +39,5 @@ export class RoleService {
       .exec();
 
     return roles;
-  }
-
-  async get_permissions_toRole(dto) {
-
   }
 }

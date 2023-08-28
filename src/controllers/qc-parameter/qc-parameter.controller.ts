@@ -10,7 +10,7 @@ export class QcParameterController {
 
   
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('2'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('2'))
   check_Access() {
     return { message: 'Success' };
   }
@@ -21,7 +21,7 @@ export class QcParameterController {
   }
 
   @Post('all')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('9'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('9'))
   async allQcParameters(@Body() dto: FilterQcParameterDto) {
     return await this.qcParameterService.get_allQcParameters(dto);
   }

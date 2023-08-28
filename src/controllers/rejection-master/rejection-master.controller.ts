@@ -14,7 +14,7 @@ export class RejectionMasterController {
   ) {}
 
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('4'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('4'))
   check_accessControl() {
     return { message: 'success' };
   }

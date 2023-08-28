@@ -14,7 +14,7 @@ export class CancellationMasterController {
   ) {}
 
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('5'))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('5'))
   check_accessControl() {
     return { message: 'success' };
   }

@@ -24,6 +24,8 @@ export class AuthService {
         userID: payload.userId,
       })
       .populate({ path: 'role' });
+
+      console.log(currentUser)
     if (currentUser === null) {
       throw new UnauthorizedException('Unauthorized user');
     }
