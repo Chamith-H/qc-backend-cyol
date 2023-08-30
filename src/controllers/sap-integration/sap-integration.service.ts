@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as https from 'https';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
+import { checkServerIdentity } from 'tls';
 
 @Injectable()
 export class SapIntegrationService {
@@ -15,7 +16,7 @@ export class SapIntegrationService {
       UserName: 'manager',
       Password: '1234',
     };
-    
+
     const path = '/Login';
 
     try {
@@ -48,36 +49,40 @@ export class SapIntegrationService {
     }
   }
 
-  async get_purchaseOrders(token: string) {
+  async check_purchaseOrder(token: string, poNumber: string) {
     const path = '/PurchaseOrders';
-    const logic =
-      "?$select=DocNum,Supplier,DocumentLines&$filter=DocumentStatus ne 'C'";
+    const logic = `?$filter=DocNum eq ${poNumber}`;
 
     try {
-      const getPOs = await axios.get(this.sapBase + path + logic, {
+      const checkedPo = await axios.get(this.sapBase + path + logic, {
         headers: { Cookie: `B1SESSION=${token}` },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      return getPOs.data.value;
+      const data = {
+        docEntry: checkedPo.data.value[0].DocEntry,
+        supplier: checkedPo.data.value[0].CardName,
+      };
+
+      return data;
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
 
   async selected_purchaseOrder(token: string, poNumber: string) {
     const path = '/PurchaseOrders';
-    const id = `(${poNumber})`;
-    const logic = '?$select=DocumentLines';
+    const logic = `?$filter=DocNum eq ${poNumber}`;
 
     try {
-      const selectedPo = await axios.get(this.sapBase + path + id + logic, {
+      const selectedPo = await axios.get(this.sapBase + path + logic, {
         headers: { Cookie: `B1SESSION=${token}` },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
       const itemData_set = await Promise.all(
-        selectedPo.data.DocumentLines.map(async (item) => {
+        selectedPo.data.value[0].DocumentLines.map(async (item) => {
           const checkingDto = {
             itemCode: item.ItemCode,
             line: item.LineNum,
@@ -105,6 +110,49 @@ export class SapIntegrationService {
 
       return finalArray;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async create_goodsReceiptPO(
+    token: string,
+    po: string,
+    line: number,
+    quantity: number,
+    batch: string,
+  ) {
+    const check_poEntry = await this.check_purchaseOrder(token, po);
+    const selected_poEntry = check_poEntry.docEntry;
+
+    const path = '/PurchaseDeliveryNotes';
+    const body = {
+      DocumentLines: [
+        {
+          BaseEntry: selected_poEntry,
+          BaseLine: line,
+          BaseType: 22,
+          Quantity: quantity,
+          WarehouseCode: 'QC_A_1',
+          BatchNumbers: [
+            {
+              BatchNumber: batch,
+              Quantity: quantity,
+            },
+          ],
+        },
+      ],
+    };
+
+    try {
+      const createdGRN = await axios.post(this.sapBase + path, body, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      console.log(createdGRN.data);
+      return createdGRN.data;
+    } catch (error) {
+      console.log(error.message);
       throw error;
     }
   }

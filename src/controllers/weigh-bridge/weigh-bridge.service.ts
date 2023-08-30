@@ -32,6 +32,8 @@ export class WeighBridgeService {
       requestNo: requestData.requestId,
       transaction: 'Pending',
       itemWeight: '',
+      wastage: '',
+      warehouse: '',
     };
 
     const newWeighbridgeRequest = new this.weighbridgeModel(weighBridgeData);

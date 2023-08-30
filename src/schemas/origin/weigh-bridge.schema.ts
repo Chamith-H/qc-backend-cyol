@@ -34,6 +34,12 @@ export class Weighbridge {
 
   @Prop()
   itemWeight: string;
+
+  @Prop()
+  wastage: string
+
+  @Prop()
+  warehouse: string
 }
 
 export const WeighbridgeSchema = SchemaFactory.createForClass(Weighbridge);

@@ -1,6 +1,15 @@
-import { Controller, Param, Get, Res, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Param,
+  Get,
+  Res,
+  Headers,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { SapIntegrationService } from './sap-integration.service';
 import { Response } from 'express';
+import { CreateGRNDto } from './sap-integration.dto';
 
 @Controller('sap-integration')
 export class SapIntegrationController {
@@ -22,11 +31,17 @@ export class SapIntegrationController {
     }
   }
 
-  @Get('po')
-  async sapPos(@Headers('sessionId') session: string, @Res() res: Response) {
-    const response = await this.sapIntegrationService.get_purchaseOrders(
+  @Get('selected/:po')
+  async checkedPo(
+    @Headers('sessionId') session: string,
+    @Param('po') po: string,
+    @Res() res: Response,
+  ) {
+    const response = await this.sapIntegrationService.check_purchaseOrder(
       session,
+      po,
     );
+
     if (response) {
       res.status(200).jsonp(response);
     }
@@ -45,6 +60,20 @@ export class SapIntegrationController {
 
     if (response) {
       res.status(200).jsonp(response);
+    }
+  }
+
+  @Post('create-grn')
+  async CreateGRN(@Body() dto: CreateGRNDto, @Res() res: Response) {
+    const response = await this.sapIntegrationService.create_goodsReceiptPO(
+      dto.session,
+      dto.po,
+      dto.line,
+      dto.quantity,
+      dto.batch,
+    );
+    if (response) {
+      res.status(200).jsonp({ message: 'GRN created successfully' });
     }
   }
 }
