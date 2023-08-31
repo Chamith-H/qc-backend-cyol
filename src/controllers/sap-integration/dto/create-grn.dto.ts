@@ -6,7 +6,7 @@ export class CreateGRNDto {
   session: string;
 
   @IsNotEmpty()
-  po: string
+  po: string;
 
   @IsNotEmpty()
   line: number;
@@ -15,5 +15,8 @@ export class CreateGRNDto {
   quantity: number;
 
   @IsNotEmpty()
-  batch: string
+  batch: string;
+
+  @IsNotEmpty()
+  warehouse: string;
 }

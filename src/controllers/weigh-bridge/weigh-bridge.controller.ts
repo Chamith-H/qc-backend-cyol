@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { WeighBridgeService } from './weigh-bridge.service';
-import { FilterWeighBridgeDto, UpdateWeightQuantityDto } from './weigh-bridge.dto';
+import { FilterWeighBridgeDto, UpdateWeightQuantityDto, UpgradeGrnDto } from './weigh-bridge.dto';
 
 @Controller('weigh-bridge')
 export class WeighBridgeController {
@@ -16,8 +16,8 @@ export class WeighBridgeController {
         return await this.weighbridgeService.update_Weight(dto)
     }
 
-    @Post('update')
-    async createGRN(@Body() dto: UpdateWeightQuantityDto) {
+    @Post('update-transaction')
+    async createGRN(@Body() dto: UpgradeGrnDto) {
         return await this.weighbridgeService.create_GRN(dto)
     }
 }

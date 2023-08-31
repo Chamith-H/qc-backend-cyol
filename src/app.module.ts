@@ -30,6 +30,7 @@ import { RejectionListModule } from './controllers/rejection-list/rejection-list
 import { AccessControlModule } from './controllers/access-control/access-control.module';
 import { ProcessControlModule } from './controllers/process-control/process-control.module';
 import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
+import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
     AccessControlModule,
     ProcessControlModule,
     TimeSlotModule,
+    SapHookModule,
   ],
   controllers: [AppController],
   providers: [AppService],

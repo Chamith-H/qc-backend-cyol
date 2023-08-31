@@ -120,6 +120,7 @@ export class SapIntegrationService {
     line: number,
     quantity: number,
     batch: string,
+    warehouse: string,
   ) {
     const check_poEntry = await this.check_purchaseOrder(token, po);
     const selected_poEntry = check_poEntry.docEntry;
@@ -131,8 +132,9 @@ export class SapIntegrationService {
           BaseEntry: selected_poEntry,
           BaseLine: line,
           BaseType: 22,
+          SerialNum: batch,
           Quantity: quantity,
-          WarehouseCode: 'QC_A_1',
+          WarehouseCode: warehouse,
           BatchNumbers: [
             {
               BatchNumber: batch,
@@ -149,11 +151,15 @@ export class SapIntegrationService {
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      console.log(createdGRN.data);
       return createdGRN.data;
     } catch (error) {
       console.log(error.message);
       throw error;
     }
+  }
+
+  async get_latestGRN(token: string) {
+    const path = '/PurchaseDeliveryNotes';
+    const logic = '?$orderby=DocEntry desc&$top=1'
   }
 }

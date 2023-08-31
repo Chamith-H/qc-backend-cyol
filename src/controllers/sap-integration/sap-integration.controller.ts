@@ -71,8 +71,10 @@ export class SapIntegrationController {
       dto.line,
       dto.quantity,
       dto.batch,
+      dto.warehouse,
     );
     if (response) {
+      console.log(response)
       res.status(200).jsonp({ message: 'GRN created successfully' });
     }
   }

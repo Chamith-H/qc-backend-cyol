@@ -9,6 +9,7 @@ import {
 import {
   FilterWeighBridgeDto,
   UpdateWeightQuantityDto,
+  UpgradeGrnDto,
   WeighBridgeRequestDto,
 } from './weigh-bridge.dto';
 
@@ -64,11 +65,10 @@ export class WeighBridgeService {
     );
   }
 
-  async create_GRN(dto: UpdateWeightQuantityDto) {
-    return await this.weighbridgeModel.updateOne(
-      { _id: dto.requestId },
-      { $set: { transaction: 'Completed' } },
-    );
+  async create_GRN(dto: UpgradeGrnDto) {
+    const id = dto.requestId;
+    delete dto.requestId;
+    return await this.weighbridgeModel.updateOne({ _id: id }, { $set: dto });
   }
 
   async get_pendingCount() {
