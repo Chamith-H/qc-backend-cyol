@@ -15,6 +15,11 @@ import { CreateGRNDto } from './sap-integration.dto';
 export class SapIntegrationController {
   constructor(private readonly sapIntegrationService: SapIntegrationService) {}
 
+  @Get('create')
+  async create_Sap() {
+    return await this.sapIntegrationService.create_sapSession();
+  }
+
   @Get('login')
   async sapLogin(@Res() res: Response) {
     const response = await this.sapIntegrationService.login_sapServer();
@@ -25,7 +30,7 @@ export class SapIntegrationController {
 
   @Get('items')
   async sapItems(@Headers('sessionId') session: string, @Res() res: Response) {
-    const response = await this.sapIntegrationService.get_qcItems(session);
+    const response = await this.sapIntegrationService.get_qcItems();
     if (response) {
       res.status(200).jsonp(response);
     }
@@ -37,10 +42,7 @@ export class SapIntegrationController {
     @Param('po') po: string,
     @Res() res: Response,
   ) {
-    const response = await this.sapIntegrationService.check_purchaseOrder(
-      session,
-      po,
-    );
+    const response = await this.sapIntegrationService.check_purchaseOrder(po);
 
     if (response) {
       res.status(200).jsonp(response);
@@ -54,7 +56,6 @@ export class SapIntegrationController {
     @Res() res: Response,
   ) {
     const response = await this.sapIntegrationService.selected_purchaseOrder(
-      session,
       po,
     );
 
@@ -66,7 +67,6 @@ export class SapIntegrationController {
   @Post('create-grn')
   async CreateGRN(@Body() dto: CreateGRNDto, @Res() res: Response) {
     const response = await this.sapIntegrationService.create_goodsReceiptPO(
-      dto.session,
       dto.po,
       dto.line,
       dto.quantity,
@@ -74,7 +74,7 @@ export class SapIntegrationController {
       dto.warehouse,
     );
     if (response) {
-      console.log(response)
+      console.log(response);
       res.status(200).jsonp({ message: 'GRN created successfully' });
     }
   }

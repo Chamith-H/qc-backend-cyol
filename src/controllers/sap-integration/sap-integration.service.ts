@@ -3,10 +3,20 @@ import axios from 'axios';
 import * as https from 'https';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
 import { checkServerIdentity } from 'tls';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  SapSession,
+  SapSessionDocument,
+} from 'src/schemas/sap-hooks/sap-session.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class SapIntegrationService {
-  constructor(private readonly itemParameterService: ItemParameterService) {}
+  constructor(
+    @InjectModel(SapSession.name)
+    private readonly sessionModel: Model<SapSessionDocument>,
+    private readonly itemParameterService: ItemParameterService,
+  ) {}
 
   private sapBase = 'https://35.213.141.233:50000/b1s/v2';
 
@@ -33,7 +43,38 @@ export class SapIntegrationService {
     }
   }
 
-  async get_qcItems(token: string) {
+  async create_sapSession() {
+    const currentSession = await this.sessionModel.findOne({ target: 'SAP' });
+    const currentDate = new Date(currentSession.date);
+    const nowDate = new Date();
+
+    const timeGap = nowDate.getTime() - currentDate.getTime();
+    const difference = timeGap / (1000 * 60);
+
+    if (difference > 26) {
+      const sapConnection = await this.login_sapServer();
+
+      const sessionData = {
+        sessionToken: sapConnection.session,
+        date: new Date(),
+      };
+
+      const updateSession = await this.sessionModel.updateOne(
+        { target: 'SAP' },
+        { $set: sessionData },
+      );
+
+      return updateSession;
+    }
+  }
+
+  async get_sapToken() {
+    const sap_connection = await this.sessionModel.findOne({ target: 'SAP' });
+    return sap_connection.sessionToken;
+  }
+
+  async get_qcItems() {
+    const token = await this.get_sapToken();
     const path = '/Items';
     const logic =
       "?$select=ItemCode,ItemName,U_QC_Required&$filter=U_QC_Required eq 'Y'";
@@ -49,7 +90,8 @@ export class SapIntegrationService {
     }
   }
 
-  async check_purchaseOrder(token: string, poNumber: string) {
+  async check_purchaseOrder(poNumber: string) {
+    const token = await this.get_sapToken();
     const path = '/PurchaseOrders';
     const logic = `?$filter=DocNum eq ${poNumber}`;
 
@@ -71,7 +113,8 @@ export class SapIntegrationService {
     }
   }
 
-  async selected_purchaseOrder(token: string, poNumber: string) {
+  async selected_purchaseOrder(poNumber: string) {
+    const token = await this.get_sapToken();
     const path = '/PurchaseOrders';
     const logic = `?$filter=DocNum eq ${poNumber}`;
 
@@ -115,16 +158,16 @@ export class SapIntegrationService {
   }
 
   async create_goodsReceiptPO(
-    token: string,
     po: string,
     line: number,
     quantity: number,
     batch: string,
     warehouse: string,
   ) {
-    const check_poEntry = await this.check_purchaseOrder(token, po);
+    const check_poEntry = await this.check_purchaseOrder(po);
     const selected_poEntry = check_poEntry.docEntry;
 
+    const token = await this.get_sapToken();
     const path = '/PurchaseDeliveryNotes';
     const body = {
       DocumentLines: [
@@ -158,8 +201,21 @@ export class SapIntegrationService {
     }
   }
 
-  async get_latestGRN(token: string) {
+  async get_latestGRN() {
+    const token = await this.get_sapToken();
     const path = '/PurchaseDeliveryNotes';
-    const logic = '?$orderby=DocEntry desc&$top=1'
+    const logic = '?$orderby=DocEntry desc&$top=1';
+
+    try {
+      const latestGRN = await axios.post(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return latestGRN.data;
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -37,6 +38,7 @@ import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
     MongooseModule.forRoot(
       'mongodb+srv://chamith:9875@testdb.qzldlok.mongodb.net/cyolQC',
     ),
+    ScheduleModule.forRoot(),
     AuthModule,
     RoleModule,
     PermissionModule,
