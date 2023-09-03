@@ -218,4 +218,10 @@ export class SapIntegrationService {
       throw error;
     }
   }
+
+  async transfer_toInventry() {
+    // integrate to SAP | inventry transfers
+
+    return 'ok';
+  }
 }

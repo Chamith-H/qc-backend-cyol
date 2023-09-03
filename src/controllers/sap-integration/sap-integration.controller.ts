@@ -78,4 +78,9 @@ export class SapIntegrationController {
       res.status(200).jsonp({ message: 'GRN created successfully' });
     }
   }
+
+  @Post('inventry-transfer')
+  async createTransfer() {
+    return await this.sapIntegrationService.transfer_toInventry();
+  }
 }

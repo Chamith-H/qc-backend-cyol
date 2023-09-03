@@ -171,7 +171,10 @@ export class InspectionService {
         origin: currentInspection,
       };
 
-      return await this.whsTransferService.create_whsRequest(whsRequestDto);
+      const createdResponse = await this.whsTransferService.create_whsRequest(
+        whsRequestDto,
+      );
+      return await this.create_newTransactionReport(dto, createdResponse);
     }
   }
 
