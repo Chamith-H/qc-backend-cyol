@@ -21,6 +21,7 @@ import { TransactionReportService } from '../transaction-report/transaction-repo
 import { RejectionItemService } from '../rejection-item/rejection-item.service';
 import { CancellationItemService } from '../cancellation-item/cancellation-item.service';
 import { RejectionDataService } from '../rejection-data/rejection-data.service';
+import { WhsTransferService } from '../whs-transfer/whs-transfer.service';
 
 @Injectable()
 export class InspectionService {
@@ -36,6 +37,7 @@ export class InspectionService {
     private readonly rejectionItemService: RejectionItemService,
     private readonly cancellationItemService: CancellationItemService,
     private readonly rejectionDataService: RejectionDataService,
+    private readonly whsTransferService: WhsTransferService,
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -101,6 +103,10 @@ export class InspectionService {
     return await this.inspectionModel.find(dto).sort({ number: -1 }).exec();
   }
 
+  async fetch_inspections() {
+    return await this.inspectionModel.find({});
+  }
+
   async get_selectedInspection(dto: SelectInspectionDto) {
     return await this.inspectionModel
       .findOne({ _id: dto.inspectId })
@@ -120,8 +126,6 @@ export class InspectionService {
   async update_qcStatus(dto: UpdateStatusDto) {
     const id = dto.inspectId;
     delete dto.inspectId;
-
-    console.log(dto);
 
     const updateStatus = await this.inspectionModel.updateOne(
       { _id: id },
@@ -145,7 +149,7 @@ export class InspectionService {
       throw new BadRequestException('This request already transfered');
     }
 
-    if (dto.qcStatus !== 'Rejected') {
+    if (dto.qcStatus !== 'Rejected' && dto.stage === 'Token') {
       const updateRejection =
         await this.rejectionItemService.exist_FinderUpdate({
           batch: dto.batch,
@@ -156,6 +160,18 @@ export class InspectionService {
 
     if (dto.stage === 'Token') {
       return await this.find_transferSectionTOKEN(dto);
+    }
+
+    // For GRN & Inventry transfer parts ...
+    else {
+      const currentInspection = await this.inspectionModel.findOne({
+        _id: dto.inspectId,
+      });
+      const whsRequestDto = {
+        origin: currentInspection,
+      };
+
+      return await this.whsTransferService.create_whsRequest(whsRequestDto);
     }
   }
 

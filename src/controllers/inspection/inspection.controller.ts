@@ -1,5 +1,11 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
-import { CreateInspectionDto, FilterInspectionDto, SelectInspectionDto, UpdateStatusDto, UpdateTransactionDto } from './inspection.dto';
+import {
+  CreateInspectionDto,
+  FilterInspectionDto,
+  SelectInspectionDto,
+  UpdateStatusDto,
+  UpdateTransactionDto,
+} from './inspection.dto';
 import { InspectionService } from './inspection.service';
 
 @Controller('inspection')
@@ -16,33 +22,38 @@ export class InspectionController {
     return await this.inspectionService.get_allInspections(dto);
   }
 
+  @Get('all-inspections')
+  async getAllRequests() {
+    return await this.inspectionService.fetch_inspections();
+  }
+
   @Post('selected')
   async selectInspection(@Body() dto: SelectInspectionDto) {
-    return await this.inspectionService.get_selectedInspection(dto)
+    return await this.inspectionService.get_selectedInspection(dto);
   }
 
   @Post('update-status')
   async updateQcStatus(@Body() dto: UpdateStatusDto) {
-    return await this.inspectionService.update_qcStatus(dto)
+    return await this.inspectionService.update_qcStatus(dto);
   }
 
   @Post('update-transaction')
   async updateTransaction(@Body() dto: UpdateTransactionDto) {
-    return await this.inspectionService.update_Transaction(dto)
+    return await this.inspectionService.update_Transaction(dto);
   }
 
-  @Post('get-selecter') 
+  @Post('get-selecter')
   async selectedMinimalData(@Body() dto: SelectInspectionDto) {
-    return await this.inspectionService.get_minimalData(dto)
+    return await this.inspectionService.get_minimalData(dto);
   }
 
   @Post('second-inspection')
   async createSecondInspection(@Body() dto: SelectInspectionDto) {
-    return await this.inspectionService.create_newRequest_to_currentBatch(dto)
+    return await this.inspectionService.create_newRequest_to_currentBatch(dto);
   }
 
   @Get('count')
   async getRequestCounter() {
-    return await this.inspectionService.get_inspectionCounter()
+    return await this.inspectionService.get_inspectionCounter();
   }
 }

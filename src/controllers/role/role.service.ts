@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Role, RoleDocument } from 'src/schemas/auth/role.schema';
-import { CreateRoleDto } from './role.dto';
+import { CreateRoleDto, SelectedRoleDto } from './role.dto';
 
 @Injectable()
 export class RoleService {
@@ -39,5 +39,14 @@ export class RoleService {
       .exec();
 
     return roles;
+  }
+
+  async get_selectedRole(dto: SelectedRoleDto) {
+    const roleData = await this.roleModel
+      .findOne({ roleName: dto.roleName })
+      .populate({ path: 'permissions' })
+      .exec();
+
+    return roleData.permissions;
   }
 }

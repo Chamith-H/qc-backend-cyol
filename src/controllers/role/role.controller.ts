@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { CreateRoleDto } from './role.dto';
+import { CreateRoleDto, SelectedRoleDto } from './role.dto';
 
 @Controller('role')
 export class RoleController {
@@ -15,5 +15,10 @@ export class RoleController {
   @Get('all')
   async allRoles() {
     return await this.roleService.get_allRoles();
+  }
+
+  @Post('selected')
+  async selectedRole(@Body() dto: SelectedRoleDto) {
+    return await this.roleService.get_selectedRole(dto)
   }
 }

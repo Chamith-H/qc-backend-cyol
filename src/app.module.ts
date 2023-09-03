@@ -32,6 +32,7 @@ import { AccessControlModule } from './controllers/access-control/access-control
 import { ProcessControlModule } from './controllers/process-control/process-control.module';
 import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
 import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
+import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
     ProcessControlModule,
     TimeSlotModule,
     SapHookModule,
+    WhsTransferModule,
   ],
   controllers: [AppController],
   providers: [AppService],
