@@ -224,6 +224,13 @@ export class ItemParameterService {
   }
 
   async inspectionParameters(dto: InspectionParameterDto) {
+    const selecter = await this.itemParameterModel.findOne({
+      itemCode: dto.itemCode,
+    });
+    if (!selecter) {
+      return;
+    }
+
     const all_stages = (
       await this.itemParameterModel
         .findOne({ itemCode: dto.itemCode })

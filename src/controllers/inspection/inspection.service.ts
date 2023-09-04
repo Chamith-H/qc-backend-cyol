@@ -128,6 +128,10 @@ export class InspectionService {
       date: '2023-05-07',
     };
 
+    if (!inspectionData.qualityChecking) {
+      return;
+    }
+
     const newInspection = new this.inspectionModel(inspectionData);
     return newInspection.save();
   }

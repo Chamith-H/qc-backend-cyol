@@ -26,7 +26,7 @@ export class SapHookService {
     return this.sapIntegrationService.create_sapSession();
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  // @Cron(CronExpression.EVERY_5_SECONDS)
   async trigger_GRNs() {
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
 
@@ -42,11 +42,14 @@ export class SapHookService {
           quantity: grn.DocumentLines[0].Quantity,
         };
 
-        await this.inspectionService.create_newOtherInspection(inspection)
+        const createInspection =
+          await this.inspectionService.create_newOtherInspection(inspection);
 
-        // const grnDocument = { grnNo: grn.DocNum };
-        // const newTrigger = new this.grnModel(grnDocument);
-        // await newTrigger.save();
+        if (createInspection) {
+          const grnDocument = { grnNo: grn.DocNum };
+          const newTrigger = new this.grnModel(grnDocument);
+          await newTrigger.save();
+        }
       }
     });
   }
