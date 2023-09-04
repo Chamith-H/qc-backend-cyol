@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import {
   ProcessControlShift,
   ProcessControlShiftDocument,
@@ -18,6 +19,7 @@ import {
   CreateTimeProcessDto,
   SelectedProcessControlDto,
   SelectedTimeSlotDto,
+  UpdateProcessStatusDto,
   UpdateVerifiedDataDto,
 } from './process-control.dto';
 import { BatchOriginService } from '../batch-origin/batch-origin.service';
@@ -110,6 +112,8 @@ export class ProcessControlService {
       times: [],
       createdBy: creater,
       status: 'Pending',
+      changedBy: '',
+      changedDate: '',
     };
 
     const newShift = new this.processControlShiftModel(shift);
@@ -185,11 +189,50 @@ export class ProcessControlService {
     const id = dto.id;
     delete dto.id;
 
+    const updater = { ...dto, status: 'Approved' };
     const response = await this.processControlTimeModel.updateOne(
       { _id: id },
-      { $set: { dto } },
+      { $set: updater },
     );
 
-    console.log(response);
+    if (response.modifiedCount !== 1) {
+      throw new BadRequestException('Error updating');
+    }
+
+    return { message: 'QC inspection verified successfully ..!' };
+  }
+
+  async update_qcStatus(dto: UpdateProcessStatusDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.processControlShiftModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new BadRequestException('Error updating');
+    }
+
+    return { message: 'QC status changed successfully ..!' };
+  }
+
+  async get_selectedShiftExpand(dto: SelectedShiftDto) {
+    return await this.processControlShiftModel
+      .findOne({ _id: dto.shiftId })
+      .populate({
+        path: 'times',
+        populate: {
+          path: 'qualityChecking',
+          populate: {
+            path: 'standardData',
+            populate: {
+              path: 'parameterId',
+              populate: { path: 'uom equipment' },
+            },
+          },
+        },
+      });
   }
 }

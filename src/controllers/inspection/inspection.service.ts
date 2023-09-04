@@ -76,7 +76,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-04-16',
+      date: inspectItem.date,
     };
 
     const newInspection = new this.inspectionModel(inspectionData);

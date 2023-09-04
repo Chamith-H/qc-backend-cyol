@@ -1,12 +1,12 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class UpdateVerifiedDataDto {
-    @IsNotEmpty()
-    id: string;
+  @IsNotEmpty()
+  id: string;
 
-    @IsNotEmpty()
-    verifiedBy: string;
+  @IsNotEmpty()
+  verifiedBy: string;
 
-    @IsNotEmpty()
-    verifiedDate: string;
+  @IsNotEmpty()
+  verifiedDate: string;
 }

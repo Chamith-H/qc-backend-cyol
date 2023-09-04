@@ -26,6 +26,7 @@ export class DocOriginService {
       itemCode: docOrigin.itemCode,
       stage: docOrigin.baseDocType,
       baseDoc: docOrigin.baseDocNo,
+      date: docOrigin.transferDate,
     };
   }
 

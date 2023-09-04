@@ -18,13 +18,13 @@ export class SapIntegrationService {
     private readonly itemParameterService: ItemParameterService,
   ) {}
 
-  private sapBase = 'https://35.213.141.233:50000/b1s/v2';
+  private sapBase = 'https://160.242.56.198:50000/b1s/v2';
 
   async login_sapServer() {
     const hanaCredentials = {
-      CompanyDB: 'SBODEMOUS',
+      CompanyDB: 'UAT260B',
       UserName: 'manager',
-      Password: '1234',
+      Password: 'Test@1234',
     };
 
     const path = '/Login';
@@ -204,15 +204,15 @@ export class SapIntegrationService {
   async get_latestGRN() {
     const token = await this.get_sapToken();
     const path = '/PurchaseDeliveryNotes';
-    const logic = '?$orderby=DocEntry desc&$top=1';
+    const logic = '?$orderby=DocEntry desc&$top=5';
 
     try {
-      const latestGRN = await axios.post(this.sapBase + path + logic, {
+      const latestGRN = await axios.get(this.sapBase + path + logic, {
         headers: { Cookie: `B1SESSION=${token}` },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       });
 
-      return latestGRN.data;
+      return latestGRN.data.value;
     } catch (error) {
       console.log(error.message);
       throw error;

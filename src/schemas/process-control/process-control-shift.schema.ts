@@ -20,6 +20,12 @@ export class ProcessControlShift {
 
   @Prop()
   status: string;
+
+  @Prop()
+  changedBy: string;
+
+  @Prop()
+  changedDate: string;
 }
 
 export const ProcessControlShiftSchema =

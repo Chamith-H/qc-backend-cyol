@@ -83,4 +83,9 @@ export class SapIntegrationController {
   async createTransfer() {
     return await this.sapIntegrationService.transfer_toInventry();
   }
+
+  @Get('latest-grn')
+  async getLatestGRN() {
+    return await this.sapIntegrationService.get_latestGRN();
+  }
 }
