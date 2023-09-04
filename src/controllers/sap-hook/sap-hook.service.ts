@@ -39,13 +39,14 @@ export class SapHookService {
           baseDoc: grn.DocNum,
           batch: grn.DocumentLines[0].SerialNum, // '', null, undefined
           warehouse: grn.DocumentLines[0].WarehouseCode,
+          quantity: grn.DocumentLines[0].Quantity,
         };
 
-        // create inspection using this
+        await this.inspectionService.create_newOtherInspection(inspection)
 
-        const grnDocument = { grnNo: grn.DocNum };
-        const newTrigger = new this.grnModel(grnDocument);
-        await newTrigger.save();
+        // const grnDocument = { grnNo: grn.DocNum };
+        // const newTrigger = new this.grnModel(grnDocument);
+        // await newTrigger.save();
       }
     });
   }

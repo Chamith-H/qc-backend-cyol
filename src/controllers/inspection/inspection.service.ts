@@ -83,6 +83,55 @@ export class InspectionService {
     return newInspection.save();
   }
 
+  async create_newOtherInspection(initialData: any) {
+    let targetBatch: string;
+
+    if (
+      initialData.batch === null ||
+      initialData.batch === undefined ||
+      initialData.batch === ''
+    ) {
+      targetBatch = await this.batchOriginService.save_newBatch();
+    } else {
+      targetBatch = initialData.batch;
+    }
+
+    const requestData = await this.requestGenerater.create_NewRequest(
+      this.inspectionModel,
+      'REQ',
+    );
+
+    const checkingData = await this.itemParameterService.inspectionParameters({
+      itemCode: initialData.itemCode,
+      stage: initialData.stage,
+    });
+
+    const inspectionData = {
+      number: requestData.requestNumber,
+      requestId: requestData.requestId,
+      stage: initialData.stage,
+      itemCode: initialData.itemCode,
+      baseDoc: initialData.baseDoc,
+      batch: targetBatch,
+      qualityChecking: checkingData,
+      quantity: initialData.quantity,
+      warehouse: initialData.warehouse,
+      qcStatus: 'Pending',
+      transaction: 'Pending',
+      inspector: '',
+      inspectionDate: '',
+      transferor: '',
+      transactionDate: '',
+      description: '',
+      remarks: '',
+      code: '',
+      date: '2023-05-07',
+    };
+
+    const newInspection = new this.inspectionModel(inspectionData);
+    return newInspection.save();
+  }
+
   async get_allInspections(dto: FilterInspectionDto) {
     if (dto.qcStatus === 'All') {
       delete dto.qcStatus;
