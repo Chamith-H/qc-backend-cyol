@@ -7,7 +7,7 @@ import {
 
 @Injectable()
 export class RbacRoleGuard implements CanActivate {
-  constructor(private requiredPermissionId: string) {}
+  constructor(private requiredPermissionId: number) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
@@ -18,11 +18,13 @@ export class RbacRoleGuard implements CanActivate {
     }
 
     const hasPermission = user.role.permissions.some(
-      (permission) => permission.id === this.requiredPermissionId,
+      (permission) => permission.number === this.requiredPermissionId,
     );
 
     if (!hasPermission) {
-      throw new UnauthorizedException('You do not have proper permission to proceed with the clicked action.');
+      throw new UnauthorizedException(
+        'You do not have proper permission to proceed with the clicked action.',
+      );
     }
 
     return true;

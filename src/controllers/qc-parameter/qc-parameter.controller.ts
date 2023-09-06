@@ -8,9 +8,8 @@ import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 export class QcParameterController {
   constructor(private readonly qcParameterService: QcParameterService) {}
 
-  
   @Get('access')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('2'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(2))
   check_Access() {
     return { message: 'Success' };
   }
@@ -21,13 +20,13 @@ export class QcParameterController {
   }
 
   @Post('all')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('9'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(6))
   async allQcParameters(@Body() dto: FilterQcParameterDto) {
     return await this.qcParameterService.get_allQcParameters(dto);
   }
 
   @Get('every')
   async everyQcParameters() {
-    return this.qcParameterService.get_allQcParametersToSelect()
+    return this.qcParameterService.get_allQcParametersToSelect();
   }
 }

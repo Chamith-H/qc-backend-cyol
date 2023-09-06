@@ -16,7 +16,7 @@ export class ItemParameterController {
   constructor(private readonly itemParameterService: ItemParameterService) {}
 
   @Get('access')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('3'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(3))
   check_accessControl() {
     return { message: 'success' };
   }
@@ -32,7 +32,7 @@ export class ItemParameterController {
   }
 
   @Post('all')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('977'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(9))
   async getItemParameters(@Body() dto: FilterItemDto) {
     return await this.itemParameterService.get_allItemParameters(dto);
   }

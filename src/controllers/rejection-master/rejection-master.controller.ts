@@ -14,7 +14,7 @@ export class RejectionMasterController {
   ) {}
 
   @Get('access')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('4'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(4))
   check_accessControl() {
     return { message: 'success' };
   }
@@ -25,6 +25,7 @@ export class RejectionMasterController {
   }
 
   @Post('all')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(12))
   async getRejections(@Body() dto: FilterRejectionMasterDto) {
     return await this.rejectionMasterService.get_allRejectionMasters(dto);
   }

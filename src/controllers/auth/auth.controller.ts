@@ -17,13 +17,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(1))
   check_accessControl() {
     return { message: 'Success' };
   }
 
   @Post('register')
-  // @UseGuards(JwtAuthGuard, new RbacRoleGuard('1'))
   async register(@Body() dto: RegisterDto) {
     return await this.authService.create_newUser(dto);
   }

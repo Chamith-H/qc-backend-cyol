@@ -23,9 +23,8 @@ export class AuthService {
       .findOne({
         userID: payload.userId,
       })
-      .populate({ path: 'role' });
+      .populate({ path: 'role', populate: { path: 'permissions' } });
 
-      console.log(currentUser)
     if (currentUser === null) {
       throw new UnauthorizedException('Unauthorized user');
     }
@@ -37,7 +36,12 @@ export class AuthService {
   async create_newUser(dto: RegisterDto) {
     const existUser = await this.userModel.findOne({ userID: dto.userID });
     if (existUser !== null) {
-      throw new ConflictException('User already exist');
+      throw new ConflictException('User ID already exists');
+    }
+
+    const existName = await this.userModel.findOne({ name: dto.name });
+    if (existName !== null) {
+      throw new ConflictException('Name already exists');
     }
 
     const newUser = new this.userModel(dto);

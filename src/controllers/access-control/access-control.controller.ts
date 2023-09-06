@@ -4,7 +4,7 @@ import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
 @Controller('access-control')
 export class AccessControlController {
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard('40'))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(1))
   @Get('check')
   check_AccessControl() {
     return { message: 'allow to access' };
