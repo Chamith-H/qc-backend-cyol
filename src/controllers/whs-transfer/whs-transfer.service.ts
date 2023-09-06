@@ -67,13 +67,17 @@ export class WhsTransferService {
       delete dto.transaction;
     }
 
-    return await this.whsTransferModel.find(dto);
+    return await this.whsTransferModel.find(dto).sort({ number: -1 }).exec();
   }
 
   async get_transactionReports(dto: FilterWhsReportDto) {
+    if (dto.stage === 'All') {
+      delete dto.stage;
+    }
+
     const filter = { ...dto, transaction: 'Completed' };
 
-    return await this.whsTransferModel.find(filter);
+    return await this.whsTransferModel.find(filter).sort({ number: -1 });
   }
 
   async update_warehouseTransaction(dto: UpdateWhsTransactionDto) {

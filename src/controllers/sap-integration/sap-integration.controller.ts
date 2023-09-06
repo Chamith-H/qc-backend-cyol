@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { SapIntegrationService } from './sap-integration.service';
 import { Response } from 'express';
-import { CreateGRNDto } from './sap-integration.dto';
+import { CreateGRNDto, CreateIVRDto } from './sap-integration.dto';
 
 @Controller('sap-integration')
 export class SapIntegrationController {
@@ -80,12 +80,12 @@ export class SapIntegrationController {
   }
 
   @Post('inventry-transfer')
-  async createTransfer() {
-    return await this.sapIntegrationService.transfer_toInventry();
+  async createTransfer(@Body() dto: CreateIVRDto) {
+    return await this.sapIntegrationService.create_inventryTransfer(dto);
   }
 
-  @Get('latest-grn')
-  async getLatestGRN() {
-    return await this.sapIntegrationService.get_latestGRN();
+  @Get('grn-warehouses')
+  async getGrnWarehouses() {
+    return await this.sapIntegrationService.get_grnWarehouses();
   }
 }

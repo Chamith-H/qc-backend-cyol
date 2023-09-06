@@ -6,6 +6,7 @@ import {
   RejectList,
   RejectListSchema,
 } from 'src/schemas/rejection/rejection-list.schema';
+import { RequestGenerater } from 'src/configs/shared/request.generater';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import {
     ]),
   ],
   controllers: [RejectionListController],
-  providers: [RejectionListService],
+  providers: [RejectionListService, RequestGenerater],
   exports: [RejectionListService],
 })
 export class RejectionListModule {}

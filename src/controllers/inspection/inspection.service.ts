@@ -86,25 +86,27 @@ export class InspectionService {
   async create_newOtherInspection(initialData: any) {
     let targetBatch: string;
 
-    if (
-      initialData.batch === null ||
-      initialData.batch === undefined ||
-      initialData.batch === ''
-    ) {
-      targetBatch = await this.batchOriginService.save_newBatch();
-    } else {
-      targetBatch = initialData.batch;
+    const checkingData = await this.itemParameterService.inspectionParameters({
+      itemCode: initialData.itemCode,
+      stage: initialData.stage,
+    });
+
+    if (checkingData) {
+      if (
+        initialData.batch === null ||
+        initialData.batch === undefined ||
+        initialData.batch === ''
+      ) {
+        targetBatch = await this.batchOriginService.save_newBatch();
+      } else {
+        targetBatch = initialData.batch;
+      }
     }
 
     const requestData = await this.requestGenerater.create_NewRequest(
       this.inspectionModel,
       'REQ',
     );
-
-    const checkingData = await this.itemParameterService.inspectionParameters({
-      itemCode: initialData.itemCode,
-      stage: initialData.stage,
-    });
 
     const inspectionData = {
       number: requestData.requestNumber,

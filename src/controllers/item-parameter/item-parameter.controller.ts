@@ -54,6 +54,6 @@ export class ItemParameterController {
 
   @Post('selected-stage')
   async selectedStageParameters(@Body() dto: SelectedStageDto) {
-    return await this.itemParameterService.get_itemCodes_SelectedStage(dto)
+    return await this.itemParameterService.get_itemCodes_SelectedStage(dto);
   }
 }

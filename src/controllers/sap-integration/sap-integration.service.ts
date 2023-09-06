@@ -9,6 +9,7 @@ import {
   SapSessionDocument,
 } from 'src/schemas/sap-hooks/sap-session.schema';
 import { Model } from 'mongoose';
+import { CreateIVRDto } from './sap-integration.dto';
 
 @Injectable()
 export class SapIntegrationService {
@@ -157,6 +158,43 @@ export class SapIntegrationService {
     }
   }
 
+  async get_grnWarehouses() {
+    const token = await this.get_sapToken();
+    const path = '/Warehouses';
+    const logic =
+      "?$select=WarehouseCode,WarehouseName,U_QC_Required&$filter=U_GRN_Status eq 'Y'";
+
+    try {
+      const warehouses = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return warehouses.data.value;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async selected_wareHouse(whsCode: string) {
+    const token = await this.get_sapToken();
+    const path = '/Warehouses';
+    const logic = `?$select=WarehouseCode,WarehouseName,U_QC_Required&$filter=WarehouseCode eq '${whsCode}'`;
+
+    try {
+      const warehouse = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return warehouse.data.value[0];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   async create_goodsReceiptPO(
     po: string,
     line: number,
@@ -170,6 +208,7 @@ export class SapIntegrationService {
     const token = await this.get_sapToken();
     const path = '/PurchaseDeliveryNotes';
     const body = {
+      BPL_IDAssignedToInvoice: 1,
       DocumentLines: [
         {
           BaseEntry: selected_poEntry,
@@ -219,9 +258,49 @@ export class SapIntegrationService {
     }
   }
 
-  async transfer_toInventry() {
-    // integrate to SAP | inventry transfers
+  async get_latestIVR() {
+    const token = await this.get_sapToken();
+    const path = '/StockTransfers';
+    const logic = '?$orderby=DocEntry desc&$top=5';
 
-    return 'ok';
+    try {
+      const latestIVR = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return latestIVR.data.value;
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  }
+
+  async create_inventryTransfer(dto: CreateIVRDto) {
+    const token = await this.get_sapToken();
+    const path = '/StockTransfers';
+    const body = {
+      StockTransferLines: [
+        {
+          ItemCode: dto.ItemCode,
+          WarehouseCode: dto.WarehouseCode,
+          FromWarehouseCode: dto.FromWarehouseCode,
+          Quantity: dto.Quantity,
+          SerialNumber: dto.SerialNumber,
+        },
+      ],
+    };
+
+    try {
+      const createdIVR = await axios.post(this.sapBase + path, body, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return createdIVR.data;
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
   }
 }

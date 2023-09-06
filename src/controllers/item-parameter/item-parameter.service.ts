@@ -240,10 +240,14 @@ export class ItemParameterService {
 
     const selected_stageParameters = all_stages.find(
       (stage) => stage.stageName === dto.stage,
-    ).parameterData;
+    );
+
+    if (!selected_stageParameters) {
+      return;
+    }
 
     return await Promise.all(
-      selected_stageParameters.map(async (standardData) => {
+      selected_stageParameters.parameterData.map(async (standardData) => {
         const observedDataDto = { standardDataId: standardData };
         return await this.observedDataService.initializeObservedData(
           observedDataDto,
@@ -364,14 +368,14 @@ export class ItemParameterService {
     }
 
     if (dto.value === 'Comparison' && dto.type === 'Percentage') {
-      if (dto.stdValue === undefined) {
+      if (dto.compareValue === undefined) {
         throw new BadRequestException('Standard value cannot be empty');
       }
-      if (isNaN(dto.stdValue)) {
+      if (isNaN(dto.compareValue)) {
         throw new BadRequestException('Standard value must be numaric');
       }
 
-      if (dto.stdValue < 0 || dto.stdValue > 100) {
+      if (dto.compareValue < 0 || dto.compareValue > 100) {
         throw new BadRequestException(
           'Standard value percentage must be in the range 0-100',
         );

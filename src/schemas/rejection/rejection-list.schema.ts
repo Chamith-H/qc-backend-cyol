@@ -6,6 +6,9 @@ export type RejectListDocument = RejectList & Document;
 @Schema()
 export class RejectList {
   @Prop()
+  number: number;
+
+  @Prop()
   stage: string;
 
   @Prop()
