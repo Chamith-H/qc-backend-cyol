@@ -39,8 +39,6 @@ export class SapHookService {
           grn.DocumentLines[0].WarehouseCode,
         );
 
-        console.log(qcStatus)
-
         if (qcStatus.U_QC_Required === 'Y') {
           const inspection = {
             stage: 'GRN',
@@ -50,6 +48,8 @@ export class SapHookService {
             warehouse: grn.DocumentLines[0].WarehouseCode,
             quantity: grn.DocumentLines[0].Quantity,
           };
+
+          console.log(inspection)
 
           const createInspection =
             await this.inspectionService.create_newOtherInspection(inspection);
