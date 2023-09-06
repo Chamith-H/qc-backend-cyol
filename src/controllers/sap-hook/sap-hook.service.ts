@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { SapGrn, SapGrnDocument } from 'src/schemas/sap-hooks/sap-grn.schema';
 import { SapIvr, SapIvrDocument } from 'src/schemas/sap-hooks/sap-ivr.schema';
 import { InspectionService } from '../inspection/inspection.service';
+import { delay } from 'rxjs';
 
 @Injectable()
 export class SapHookService {
@@ -20,6 +21,10 @@ export class SapHookService {
     private readonly sapIntegrationService: SapIntegrationService,
     private readonly inspectionService: InspectionService,
   ) {}
+
+  async delayed(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
@@ -55,7 +60,12 @@ export class SapHookService {
           if (createInspection) {
             const grnDocument = { grnNo: grn.DocNum };
             const newTrigger = new this.grnModel(grnDocument);
-            await newTrigger.save();
+            const response = await newTrigger.save();
+
+            if (response) {
+              await this.delayed(1000);
+              continue;
+            }
           }
         }
       }
