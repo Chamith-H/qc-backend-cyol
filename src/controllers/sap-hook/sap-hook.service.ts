@@ -36,39 +36,35 @@ export class SapHookService {
   async trigger_GRNs() {
     console.log('Trigger GRNs');
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
-    let check = 1;
 
     for (const grn of latest_grnData) {
-      if (check === 1) {
-        const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
-        if (!existGRN) {
-          const qcStatus = await this.sapIntegrationService.selected_wareHouse(
-            grn.DocumentLines[0].WarehouseCode,
-          );
+      const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
+      if (!existGRN) {
+        const qcStatus = await this.sapIntegrationService.selected_wareHouse(
+          grn.DocumentLines[0].WarehouseCode,
+        );
 
-          if (qcStatus.U_QC_Required === 'Y') {
-            const inspection = {
-              stage: 'GRN',
-              itemCode: grn.DocumentLines[0].ItemCode,
-              baseDoc: grn.DocNum,
-              batch: grn.DocumentLines[0].SerialNum,
-              warehouse: grn.DocumentLines[0].WarehouseCode,
-              quantity: grn.DocumentLines[0].Quantity,
-            };
+        if (qcStatus.U_QC_Required === 'Y') {
+          const inspection = {
+            stage: 'GRN',
+            itemCode: grn.DocumentLines[0].ItemCode,
+            baseDoc: grn.DocNum,
+            batch: grn.DocumentLines[0].SerialNum,
+            warehouse: grn.DocumentLines[0].WarehouseCode,
+            quantity: grn.DocumentLines[0].Quantity,
+          };
 
-            const createInspection =
-              await this.inspectionService.create_newOtherInspection(
-                inspection,
-              );
+          const createInspection =
+            await this.inspectionService.create_newOtherInspection(inspection);
 
-            if (createInspection) {
-              check = 0;
-              const grnDocument = { grnNo: grn.DocNum };
-              const newTrigger = new this.grnModel(grnDocument);
-              const response = await newTrigger.save();
+          if (createInspection) {
+            const grnDocument = { grnNo: grn.DocNum };
+            const newTrigger = new this.grnModel(grnDocument);
+            const response = await newTrigger.save();
 
+            for (let i = 1; i > 0; i++) {
               if (response) {
-                check = 1;
+                break;
               }
             }
           }
