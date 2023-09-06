@@ -23,7 +23,7 @@ export class SapHookService {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
-    // console.log('Validating sap session');
+    console.log('Validating sap session');
     return this.sapIntegrationService.create_sapSession();
   }
 
