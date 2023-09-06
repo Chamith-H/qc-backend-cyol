@@ -37,7 +37,7 @@ export class SapHookService {
     console.log('checking');
 
     for (const grn of latest_grnData) {
-      console.log(grn.DocNum)
+      console.log(grn.DocNum);
       const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
       if (!existGRN) {
         const qcStatus = await this.sapIntegrationService.selected_wareHouse(
@@ -65,7 +65,8 @@ export class SapHookService {
             for (let i = 1; i > 0; i++) {
               console.log(i);
               if (response) {
-                console.log(response)
+                console.log(response);
+                setTimeout(() => {}, 10000);
                 break;
               }
             }
