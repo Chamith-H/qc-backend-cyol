@@ -28,16 +28,16 @@ export class SapHookService {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
-    console.log('Validating sap session');
     return this.sapIntegrationService.create_sapSession();
   }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async trigger_GRNs() {
-    console.log('Trigger GRNs');
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
+    console.log('checking');
 
     for (const grn of latest_grnData) {
+      console.log(grn.DocNum)
       const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
       if (!existGRN) {
         const qcStatus = await this.sapIntegrationService.selected_wareHouse(
@@ -63,7 +63,9 @@ export class SapHookService {
             const response = await newTrigger.save();
 
             for (let i = 1; i > 0; i++) {
+              console.log(i);
               if (response) {
+                console.log(response)
                 break;
               }
             }
@@ -75,8 +77,6 @@ export class SapHookService {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async trigger_IVRs() {
-    console.log('Trigger IVRs');
-
     const latest_ivrData = await this.sapIntegrationService.get_latestIVR();
 
     for (const ivr of latest_ivrData) {
