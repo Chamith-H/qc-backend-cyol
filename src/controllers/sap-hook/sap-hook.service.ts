@@ -29,7 +29,7 @@ export class SapHookService {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async trigger_GRNs() {
-    // console.log('Trigger GRNs');
+    console.log('Trigger GRNs');
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
 
     latest_grnData.forEach(async (grn) => {
@@ -38,6 +38,8 @@ export class SapHookService {
         const qcStatus = await this.sapIntegrationService.selected_wareHouse(
           grn.DocumentLines[0].WarehouseCode,
         );
+
+        console.log(qcStatus)
 
         if (qcStatus.U_QC_Required === 'Y') {
           const inspection = {
@@ -64,7 +66,7 @@ export class SapHookService {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   async trigger_IVRs() {
-    // console.log('Trigger IVRs');
+    console.log('Trigger IVRs');
 
     const latest_ivrData = await this.sapIntegrationService.get_latestIVR();
 
