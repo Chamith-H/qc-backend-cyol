@@ -49,10 +49,10 @@ export class SapHookService {
             quantity: grn.DocumentLines[0].Quantity,
           };
 
-          console.log(inspection)
-
           const createInspection =
             await this.inspectionService.create_newOtherInspection(inspection);
+
+          console.log(createInspection);
 
           if (createInspection) {
             const grnDocument = { grnNo: grn.DocNum };
