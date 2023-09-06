@@ -32,7 +32,7 @@ export class SapHookService {
     console.log('Trigger GRNs');
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
 
-    latest_grnData.forEach(async (grn) => {
+    for (const grn of latest_grnData) {
       const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
       if (!existGRN) {
         const qcStatus = await this.sapIntegrationService.selected_wareHouse(
@@ -52,8 +52,6 @@ export class SapHookService {
           const createInspection =
             await this.inspectionService.create_newOtherInspection(inspection);
 
-          console.log(createInspection);
-
           if (createInspection) {
             const grnDocument = { grnNo: grn.DocNum };
             const newTrigger = new this.grnModel(grnDocument);
@@ -61,7 +59,7 @@ export class SapHookService {
           }
         }
       }
-    });
+    }
   }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
@@ -70,7 +68,7 @@ export class SapHookService {
 
     const latest_ivrData = await this.sapIntegrationService.get_latestIVR();
 
-    latest_ivrData.forEach(async (ivr) => {
+    for (const ivr of latest_ivrData) {
       const existIVR = await this.ivrModel.findOne({ ivrNo: ivr.DocNum });
 
       if (!existIVR) {
@@ -98,6 +96,6 @@ export class SapHookService {
           }
         }
       }
-    });
+    }
   }
 }
