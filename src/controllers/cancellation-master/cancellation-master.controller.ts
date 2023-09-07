@@ -25,7 +25,7 @@ export class CancellationMasterController {
   }
 
   @Post('all')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(16))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard(16))
   async getCancellations(@Body() dto: FilterCancellationDto) {
     return await this.cancellationMasterService.get_allCancellations(dto);
   }
