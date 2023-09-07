@@ -76,7 +76,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: inspectItem.date,
+      date: '2023-09-07',
     };
 
     const newInspection = new this.inspectionModel(inspectionData);
@@ -127,7 +127,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-05-07',
+      date: '2023-09-07',
     };
 
     if (!inspectionData.qualityChecking) {
@@ -337,7 +337,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-04-16',
+      date: '2023-09-07',
     };
 
     const newInspection = new this.inspectionModel(inspectionData);
