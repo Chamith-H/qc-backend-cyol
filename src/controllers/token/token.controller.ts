@@ -9,7 +9,7 @@ export class TokenController {
   constructor(private readonly tokenService: TokenService) {}
 
   @Get('access')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(18))
+  // @UseGuards(JwtAuthGuard, new RbacRoleGuard(18))
   check_accessControl() {
     return { message: 'success' };
   }
