@@ -20,7 +20,6 @@ export class QcParameterController {
   }
 
   @Post('all')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(6))
   async allQcParameters(@Body() dto: FilterQcParameterDto) {
     return await this.qcParameterService.get_allQcParameters(dto);
   }

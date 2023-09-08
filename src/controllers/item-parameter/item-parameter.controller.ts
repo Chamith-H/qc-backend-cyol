@@ -32,7 +32,6 @@ export class ItemParameterController {
   }
 
   @Post('all')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(9))
   async getItemParameters(@Body() dto: FilterItemDto) {
     return await this.itemParameterService.get_allItemParameters(dto);
   }
