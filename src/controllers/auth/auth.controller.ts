@@ -7,7 +7,7 @@ import {
   UseGuards,
   Get,
 } from '@nestjs/common';
-import { RegisterDto, LoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, EditUserDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
 import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
@@ -41,5 +41,10 @@ export class AuthController {
   @Get('selected/:id')
   async user(@Param('id') id: string) {
     return await this.authService.get_selectedUser(id);
+  }
+
+  @Post('edit')
+  async editUser(@Body() dto: EditUserDto) {
+    return await this.authService.edit_selectedUser(dto);
   }
 }

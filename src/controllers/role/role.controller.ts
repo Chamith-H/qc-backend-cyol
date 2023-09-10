@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { CreateRoleDto, SelectedRoleDto } from './role.dto';
+import { CreateRoleDto, SelectedRoleDto, UpdateRoleDto } from './role.dto';
 
 @Controller('role')
 export class RoleController {
@@ -8,7 +8,7 @@ export class RoleController {
 
   @Post('add')
   async createRole(@Body() dto: CreateRoleDto) {
-    console.log(dto)
+    console.log(dto);
     return await this.roleService.create_newRole(dto);
   }
 
@@ -19,6 +19,11 @@ export class RoleController {
 
   @Post('selected')
   async selectedRole(@Body() dto: SelectedRoleDto) {
-    return await this.roleService.get_selectedRole(dto)
+    return await this.roleService.get_selectedRole(dto);
+  }
+
+  @Post('update')
+  async updateRole(@Body() dto: UpdateRoleDto) {
+    return await this.roleService.update_selectedRole(dto);
   }
 }

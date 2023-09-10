@@ -158,6 +158,25 @@ export class SapIntegrationService {
     }
   }
 
+  async all_warehouses() {
+    const token = await this.get_sapToken();
+    const path = '/Warehouses';
+    const logic =
+      "?$select=WarehouseCode,WarehouseName,U_QC_Required&$filter=U_QC_Required eq 'Y'";
+
+    try {
+      const warehouses = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return warehouses.data.value;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   async get_grnWarehouses() {
     const token = await this.get_sapToken();
     const path = '/Warehouses';

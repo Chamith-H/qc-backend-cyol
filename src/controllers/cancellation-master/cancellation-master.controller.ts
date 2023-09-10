@@ -2,6 +2,7 @@ import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
 import { CancellationMasterService } from './cancellation-master.service';
 import {
   CreateCancellationDto,
+  EditCancellationMasterDto,
   FilterCancellationDto,
 } from './cancellation-master.dto';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
@@ -27,5 +28,10 @@ export class CancellationMasterController {
   @Post('all')
   async getCancellations(@Body() dto: FilterCancellationDto) {
     return await this.cancellationMasterService.get_allCancellations(dto);
+  }
+
+  @Post('edit')
+  async editCancellation(@Body() dto: EditCancellationMasterDto) {
+    return await this.cancellationMasterService.edit_selectedCancellation(dto);
   }
 }

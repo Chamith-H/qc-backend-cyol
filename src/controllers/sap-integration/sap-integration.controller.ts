@@ -88,4 +88,14 @@ export class SapIntegrationController {
   async getGrnWarehouses() {
     return await this.sapIntegrationService.get_grnWarehouses();
   }
+
+  @Get('all-warehouses')
+  async getAllWarehouses() {
+    return await this.sapIntegrationService.all_warehouses();
+  }
+
+  @Get('all-items')
+  async getAllItems() {
+    return await this.sapIntegrationService.get_qcItems();
+  }
 }

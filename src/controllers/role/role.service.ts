@@ -1,8 +1,12 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Role, RoleDocument } from 'src/schemas/auth/role.schema';
-import { CreateRoleDto, SelectedRoleDto } from './role.dto';
+import { CreateRoleDto, SelectedRoleDto, UpdateRoleDto } from './role.dto';
 
 @Injectable()
 export class RoleService {
@@ -48,5 +52,18 @@ export class RoleService {
       .exec();
 
     return roleData.permissions;
+  }
+
+  async update_selectedRole(dto: UpdateRoleDto) {
+    const response = await this.roleModel.updateOne(
+      { roleName: dto.roleName },
+      { $set: { permissions: dto.permissions } },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'ok' };
   }
 }

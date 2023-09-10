@@ -2,6 +2,7 @@ import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
 import { RejectionMasterService } from './rejection-master.service';
 import {
   CreateRejectionMasterDto,
+  EditRejectionMasterDto,
   FilterRejectionMasterDto,
 } from './rejection-master.dto';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
@@ -27,5 +28,10 @@ export class RejectionMasterController {
   @Post('all')
   async getRejections(@Body() dto: FilterRejectionMasterDto) {
     return await this.rejectionMasterService.get_allRejectionMasters(dto);
+  }
+
+  @Post('edit')
+  async updateRejection(@Body() dto: EditRejectionMasterDto) {
+    return await this.rejectionMasterService.update_selectedRejection(dto)
   }
 }

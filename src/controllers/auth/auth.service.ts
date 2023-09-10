@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
   Injectable,
 } from '@nestjs/common';
-import { LoginDto, RegisterDto } from './auth.dto';
+import { EditUserDto, LoginDto, RegisterDto } from './auth.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/auth/user.schema';
@@ -95,5 +95,17 @@ export class AuthService {
         },
       })
       .exec();
+  }
+
+  async edit_selectedUser(dto: EditUserDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.userModel.updateOne({ _id: id }, { $set: dto });
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'Ok' };
   }
 }

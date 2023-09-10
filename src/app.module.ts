@@ -33,6 +33,7 @@ import { ProcessControlModule } from './controllers/process-control/process-cont
 import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
 import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
 import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.module';
+import { ActionDeleteModule } from './controllers/action-delete/action-delete.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.modul
     TimeSlotModule,
     SapHookModule,
     WhsTransferModule,
+    ActionDeleteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

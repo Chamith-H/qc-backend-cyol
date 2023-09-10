@@ -1,11 +1,19 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   QcParameter,
   QcParameterDocument,
 } from '../../schemas/qc-parameter/qc-parameter.schema';
 import { Model } from 'mongoose';
-import { CreateQcParameterDto, FilterQcParameterDto } from './qc-parameter.dto';
+import {
+  CreateQcParameterDto,
+  EditQcParameterDto,
+  FilterQcParameterDto,
+} from './qc-parameter.dto';
 
 @Injectable()
 export class QcParameterService {
@@ -55,5 +63,21 @@ export class QcParameterService {
       .findOne({ _id: id })
       .populate({ path: 'uom equipment' })
       .exec();
+  }
+
+  async edit_qcParameter(dto: EditQcParameterDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.qcParameterModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'ok' };
   }
 }

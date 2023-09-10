@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -7,6 +7,7 @@ import {
 } from 'src/schemas/rejection/rejection-master.schema';
 import {
   CreateRejectionMasterDto,
+  EditRejectionMasterDto,
   FilterRejectionMasterDto,
 } from './rejection-master.dto';
 
@@ -24,5 +25,21 @@ export class RejectionMasterService {
 
   async get_allRejectionMasters(dto: FilterRejectionMasterDto) {
     return await this.rejectionModel.find(dto);
+  }
+
+  async update_selectedRejection(dto: EditRejectionMasterDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.rejectionModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'ok' };
   }
 }

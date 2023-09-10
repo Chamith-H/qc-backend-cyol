@@ -1,6 +1,10 @@
 import { Controller, Body, Get, Post, UseGuards } from '@nestjs/common';
 import { QcParameterService } from './qc-parameter.service';
-import { CreateQcParameterDto, FilterQcParameterDto } from './qc-parameter.dto';
+import {
+  CreateQcParameterDto,
+  EditQcParameterDto,
+  FilterQcParameterDto,
+} from './qc-parameter.dto';
 import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
 import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
@@ -27,5 +31,10 @@ export class QcParameterController {
   @Get('every')
   async everyQcParameters() {
     return this.qcParameterService.get_allQcParametersToSelect();
+  }
+
+  @Post('edit')
+  async editQcParameter(@Body() dto: EditQcParameterDto) {
+    return await this.qcParameterService.edit_qcParameter(dto);
   }
 }

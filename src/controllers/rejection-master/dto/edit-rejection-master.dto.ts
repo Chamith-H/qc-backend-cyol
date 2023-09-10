@@ -1,6 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateRejectionMasterDto {
+export class EditRejectionMasterDto {
+  @IsNotEmpty()
+  id: string;
+
   @IsNotEmpty()
   code: string;
 

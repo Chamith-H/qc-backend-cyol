@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -7,6 +7,7 @@ import {
 } from 'src/schemas/cancellation/cancellation-master.schema';
 import {
   CreateCancellationDto,
+  EditCancellationMasterDto,
   FilterCancellationDto,
 } from './cancellation-master.dto';
 
@@ -24,5 +25,21 @@ export class CancellationMasterService {
 
   async get_allCancellations(dto: FilterCancellationDto) {
     return await this.cancellationModel.find(dto);
+  }
+
+  async edit_selectedCancellation(dto: EditCancellationMasterDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.cancellationModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'ok' };
   }
 }
