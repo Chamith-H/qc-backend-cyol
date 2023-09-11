@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import {
   CreateInspectionDto,
   FilterInspectionDto,
@@ -7,6 +7,8 @@ import {
   UpdateTransactionDto,
 } from './inspection.dto';
 import { InspectionService } from './inspection.service';
+import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
+import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
 @Controller('inspection')
 export class InspectionController {
@@ -28,11 +30,19 @@ export class InspectionController {
   }
 
   @Post('selected')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(15))
   async selectInspection(@Body() dto: SelectInspectionDto) {
     return await this.inspectionService.get_selectedInspection(dto);
   }
 
+  @Post('selected-transfer')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(18))
+  async selectInspectionCheck(@Body() dto: SelectInspectionDto) {
+    return await this.inspectionService.get_selectedInspection(dto);
+  }
+
   @Post('update-status')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(17))
   async updateQcStatus(@Body() dto: UpdateStatusDto) {
     return await this.inspectionService.update_qcStatus(dto);
   }

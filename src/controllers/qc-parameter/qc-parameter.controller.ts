@@ -34,6 +34,7 @@ export class QcParameterController {
   }
 
   @Post('edit')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(6))
   async editQcParameter(@Body() dto: EditQcParameterDto) {
     return await this.qcParameterService.edit_qcParameter(dto);
   }

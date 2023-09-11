@@ -67,6 +67,10 @@ export class WhsTransferService {
       delete dto.transaction;
     }
 
+    if (dto.asignedDate) {
+      dto.asignedDate = dto.asignedDate.slice(0, 10);
+    }
+
     return await this.whsTransferModel.find(dto).sort({ number: -1 }).exec();
   }
 
@@ -74,6 +78,12 @@ export class WhsTransferService {
     if (dto.stage === 'All') {
       delete dto.stage;
     }
+
+    if (dto.transferDate) {
+      dto.transferDate = dto.transferDate.slice(0, 10);
+    }
+
+    console.log(dto);
 
     const filter = { ...dto, transaction: 'Completed' };
 

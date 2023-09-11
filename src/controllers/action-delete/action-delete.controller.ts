@@ -28,7 +28,7 @@ export class ActionDeleteController {
   }
 
   @Post('rejection')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(11))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(9))
   async deleteRejection(@Body() dto: DeleteByOneDto) {
     return await this.deleteService.delete_rejections(dto);
   }

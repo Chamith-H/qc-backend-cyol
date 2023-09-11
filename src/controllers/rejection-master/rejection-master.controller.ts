@@ -31,6 +31,7 @@ export class RejectionMasterController {
   }
 
   @Post('edit')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(8))
   async updateRejection(@Body() dto: EditRejectionMasterDto) {
     return await this.rejectionMasterService.update_selectedRejection(dto)
   }

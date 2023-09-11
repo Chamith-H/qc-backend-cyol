@@ -31,6 +31,7 @@ export class CancellationMasterController {
   }
 
   @Post('edit')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(12))
   async editCancellation(@Body() dto: EditCancellationMasterDto) {
     return await this.cancellationMasterService.edit_selectedCancellation(dto);
   }
