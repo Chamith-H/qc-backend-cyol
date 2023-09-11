@@ -60,6 +60,7 @@ export class SapHookService {
             const newTrigger = new this.grnModel(grnDocument);
             const response = await newTrigger.save();
 
+            // in a loop
             for (let i = 1; i > 0; i++) {
               if (response) {
                 setTimeout(() => {}, 15000);
