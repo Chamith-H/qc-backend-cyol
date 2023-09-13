@@ -8,6 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors();
   app.useGlobalPipes(new NoEmptyValuesPipe());
+  // deployment port
   await app.listen(process.env.PORT);
 }
 
