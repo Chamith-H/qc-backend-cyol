@@ -1,6 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { RejectionDataService } from './rejection-data.service';
 import { HandleRejectionDto } from './rejection-data.dto';
+import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
+import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
 @Controller('rejection-data')
 export class RejectionDataController {
@@ -12,6 +14,7 @@ export class RejectionDataController {
     }
 
     @Post('give-approval')
+    @UseGuards(JwtAuthGuard, new RbacRoleGuard(20))
     async giveApproval(@Body() dto: HandleRejectionDto) {
         return await this.rejectionDataServise.approve_secondTransfer(dto)
     }

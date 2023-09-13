@@ -10,13 +10,13 @@ export class ActionDeleteController {
   constructor(private readonly deleteService: ActionDeleteService) {}
 
   @Post('uom')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(25))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(23))
   async deleteUOM(@Body() dto: DeleteByOneDto) {
     return await this.deleteService.delete_selectedUOM(dto);
   }
 
   @Post('equipment')
-  @UseGuards(JwtAuthGuard, new RbacRoleGuard(23))
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(21))
   async deleteEquipment(@Body() dto: DeleteByOneDto) {
     return await this.deleteService.delete_selectedEquipment(dto);
   }

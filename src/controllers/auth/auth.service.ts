@@ -25,7 +25,7 @@ export class AuthService {
       })
       .populate({ path: 'role', populate: { path: 'permissions' } });
 
-    if (currentUser === null) {
+    if (!currentUser) {
       throw new UnauthorizedException('Unauthorized user');
     }
     delete currentUser.password;

@@ -1,11 +1,15 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   Equipment,
   EquipmentDocument,
 } from '../../schemas/qc-parameter/equipment.schema';
 import { Model } from 'mongoose';
-import { CreateEquipmentDto } from './equipment.dto';
+import { CreateEquipmentDto, EditEquipmentDto } from './equipment.dto';
 
 @Injectable()
 export class EquipmentService {
@@ -33,5 +37,41 @@ export class EquipmentService {
   //--> Get all equipments -----------------------------------------------------------------------<
   async get_allEquipments() {
     return await this.equipmentModel.find({});
+  }
+
+  async edit_currentUom(dto: EditEquipmentDto) {
+    const existCode = await this.equipmentModel.findOne({ code: dto.code });
+    if (existCode) {
+      const mongoId = existCode._id;
+      const stringId = mongoId.toHexString();
+
+      if (stringId !== dto.id) {
+        throw new ConflictException('This Equipment code is already exist');
+      }
+    }
+
+    const existName = await this.equipmentModel.findOne({ name: dto.name });
+    if (existName) {
+      const mongoId = existName._id;
+      const stringId = mongoId.toHexString();
+
+      if (stringId !== dto.id) {
+        throw new ConflictException('This Equipment name is already exist');
+      }
+    }
+
+    const id = dto.id;
+    delete dto.id;
+
+    const response = await this.equipmentModel.updateOne(
+      { _id: id },
+      { $set: dto },
+    );
+
+    if (response.modifiedCount !== 1) {
+      throw new ConflictException('Nothing to update');
+    }
+
+    return { message: 'ok' };
   }
 }

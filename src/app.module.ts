@@ -34,6 +34,7 @@ import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
 import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
 import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.module';
 import { ActionDeleteModule } from './controllers/action-delete/action-delete.module';
+import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { ActionDeleteModule } from './controllers/action-delete/action-delete.mo
     SapHookModule,
     WhsTransferModule,
     ActionDeleteModule,
+    PdfCreaterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

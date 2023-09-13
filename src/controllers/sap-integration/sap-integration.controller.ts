@@ -6,10 +6,13 @@ import {
   Headers,
   Post,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { SapIntegrationService } from './sap-integration.service';
 import { Response } from 'express';
 import { CreateGRNDto, CreateIVRDto } from './sap-integration.dto';
+import { JwtAuthGuard } from 'src/configs/guards/jwt-auth.guard';
+import { RbacRoleGuard } from 'src/configs/guards/rbac-role.guard';
 
 @Controller('sap-integration')
 export class SapIntegrationController {
@@ -65,6 +68,7 @@ export class SapIntegrationController {
   }
 
   @Post('create-grn')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(19))
   async CreateGRN(@Body() dto: CreateGRNDto, @Res() res: Response) {
     const response = await this.sapIntegrationService.create_goodsReceiptPO(
       dto.po,
@@ -80,6 +84,7 @@ export class SapIntegrationController {
   }
 
   @Post('inventry-transfer')
+  @UseGuards(JwtAuthGuard, new RbacRoleGuard(25))
   async createTransfer(@Body() dto: CreateIVRDto) {
     return await this.sapIntegrationService.create_inventryTransfer(dto);
   }
