@@ -36,6 +36,7 @@ export class TokenService {
           transferor: '',
           transferDate: '',
         };
+        // add
 
         return this.docOriginService.create_docOrigin(inspectData);
       }),
