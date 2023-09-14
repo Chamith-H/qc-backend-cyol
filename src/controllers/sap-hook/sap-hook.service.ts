@@ -26,7 +26,7 @@ export class SapHookService {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  // @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
     return this.sapIntegrationService.create_sapSession();
   }
