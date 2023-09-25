@@ -30,7 +30,6 @@ export class ObservedDataService {
   }
 
   async update_ObservedData(dto: UpdateObservedDataDto) {
-    console.log(dto);
     const currentData = await this.observedDataModel.findOne({
       _id: dto.docId,
     });

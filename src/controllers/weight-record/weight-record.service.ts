@@ -29,6 +29,7 @@ import {
   FilterMainDto,
   GetShiftDto,
   TimeItemsDto,
+  UpdateInspectionDto,
 } from './weight-record.dto';
 import { DateCreater } from 'src/configs/shared/date.creater';
 import { ItemParameterService } from '../item-parameter/item-parameter.service';
@@ -228,6 +229,8 @@ export class WeightRecordService {
 
     const itemDoc = {
       item: dto.item,
+      batch: '',
+      remarks: '',
       origin: { ...existTime.origin, time: existTime.time },
       qualityChecking: checkData,
       status: 'Pending',
@@ -269,5 +272,22 @@ export class WeightRecordService {
       });
 
     return item;
+  }
+
+  async update_qcInspection(dto: UpdateInspectionDto) {
+    const id = dto.id;
+    delete dto.id;
+
+    const date = this.dateCreater.create_newDate();
+
+    const updater = await this.weightRecordItemModel.updateOne(
+      { _id: id },
+      { $set: { ...dto, checkedDate: date } },
+    );
+    if (updater.modifiedCount !== 1) {
+      throw new ConflictException('Updating error');
+    }
+
+    return { message: 'QC status updated successfully' };
   }
 }

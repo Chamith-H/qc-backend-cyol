@@ -9,6 +9,12 @@ export class WeightRecordItem {
   @Prop()
   item: string;
 
+  @Prop()
+  batch: string;
+
+  @Prop()
+  remarks: string;
+
   @Prop({ type: Object })
   origin: any;
 

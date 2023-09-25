@@ -11,7 +11,6 @@ export class ObservedDataController {
     @Post('update')
     @UseGuards(JwtAuthGuard, new RbacRoleGuard(16))
     async updateOvservedData(@Body() dto: UpdateObservedDataDto) {
-        console.log(dto)
         return await this.observedDataService.update_ObservedData(dto)
     }
 } 

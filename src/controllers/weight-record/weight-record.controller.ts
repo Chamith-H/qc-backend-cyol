@@ -6,6 +6,7 @@ import {
   FilterMainDto,
   GetShiftDto,
   TimeItemsDto,
+  UpdateInspectionDto,
 } from './weight-record.dto';
 
 @Controller('weight-record')
@@ -44,11 +45,11 @@ export class WeightRecordController {
 
   @Post('selectedItem')
   async selectedItem(@Body() dto: GetShiftDto) {
-    return await this.weightRecordService.get_selectedItem(dto)
+    return await this.weightRecordService.get_selectedItem(dto);
   }
 
   @Post('inspect')
-  async inspectItem() {
-
+  async inspectItem(@Body() dto: UpdateInspectionDto) {
+    return await this.weightRecordService.update_qcInspection(dto);
   }
 }
