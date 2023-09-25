@@ -1,18 +1,18 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { TimeSlotService } from './time-slot.service';
-import { CreateTimeSlotDto, SelectedTimeSlotDto } from './time-slot.dto';
+import { SelectedTimeSlotDto } from '../process-control/process-control.dto';
 
 @Controller('time-slot')
 export class TimeSlotController {
-    constructor(private readonly timeSlotService: TimeSlotService){}
+  constructor(private readonly timeSlotService: TimeSlotService) {}
 
-    @Post('create')
-    async createSlot(@Body() dto: CreateTimeSlotDto) {
-        return await this.timeSlotService.create_timeSlot(dto)
-    }
+  @Get('create')
+  async createSlot() {
+    return await this.timeSlotService.create_timeSlot();
+  }
 
-    @Post('selected')
-    async selectSlot(@Body() dto: SelectedTimeSlotDto) {
-        return await this.timeSlotService.get_selectedSlot(dto)
-    }
+  @Post('selected')
+  async selectSlot(@Body() dto: SelectedTimeSlotDto) {
+    return await this.timeSlotService.get_selectedSlot(dto);
+  }
 }

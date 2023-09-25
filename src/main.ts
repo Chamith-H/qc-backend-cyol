@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new NoEmptyValuesPipe());
   // deployment port
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT || 3000);
 }
 
 bootstrap();

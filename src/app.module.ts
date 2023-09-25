@@ -35,6 +35,7 @@ import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
 import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.module';
 import { ActionDeleteModule } from './controllers/action-delete/action-delete.module';
 import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
+import { WeightRecordModule } from './controllers/weight-record/weight-record.module';
 
 @Module({
   imports: [
@@ -73,8 +74,9 @@ import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
     WhsTransferModule,
     ActionDeleteModule,
     PdfCreaterModule,
+    WeightRecordModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController,],
+  providers: [AppService,],
 })
 export class AppModule {}

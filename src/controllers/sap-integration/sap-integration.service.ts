@@ -234,12 +234,12 @@ export class SapIntegrationService {
           BaseLine: line,
           BaseType: 22,
           SerialNum: batch,
-          Quantity: quantity,
+          Weight1: quantity,
           WarehouseCode: warehouse,
           BatchNumbers: [
             {
               BatchNumber: batch,
-              Quantity: quantity,
+              Weight1: quantity,
             },
           ],
         },

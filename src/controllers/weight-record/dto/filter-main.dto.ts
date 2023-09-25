@@ -1,12 +1,11 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-
-export class CreateTimeSlotDto {
+export class FilterMainDto {
   @IsNotEmpty()
-  category: string;
-
-  @IsNotEmpty()
-  shift: string;
+  requestNo: string;
 
   @IsNotEmpty()
-  times: any[];
+  date: string;
+
+  @IsNotEmpty()
+  checkedStatus: string;
 }
