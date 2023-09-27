@@ -1,0 +1,8 @@
+applications:
+  - name: qc-backend
+    path: dist
+    memory: 256M
+    disk_quota: 512M
+    buildpacks:
+      - nodejs_buildpack
+    command: node main.js

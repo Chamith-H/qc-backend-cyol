@@ -16,6 +16,7 @@ import { RejectionItemModule } from '../rejection-item/rejection-item.module';
 import { CancellationItemModule } from '../cancellation-item/cancellation-item.module';
 import { RejectionDataModule } from '../rejection-data/rejection-data.module';
 import { WhsTransferModule } from '../whs-transfer/whs-transfer.module';
+import { DateCreater } from 'src/configs/shared/date.creater';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { WhsTransferModule } from '../whs-transfer/whs-transfer.module';
     WhsTransferModule
   ],
   controllers: [InspectionController],
-  providers: [InspectionService, RequestGenerater],
+  providers: [InspectionService, RequestGenerater, DateCreater],
   exports: [InspectionService],
 })
 export class InspectionModule {}

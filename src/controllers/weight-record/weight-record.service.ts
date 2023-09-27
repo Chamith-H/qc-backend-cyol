@@ -195,6 +195,18 @@ export class WeightRecordService {
   }
 
   async update_inspectTime(dto: GetShiftDto) {
+    const exist = await this.weightRecordTimeModel
+      .findOne({ _id: dto.id })
+      .populate({ path: 'items' });
+
+    const pendings = exist.items.some((item) => item.status === 'Pending');
+
+    if (pendings) {
+      throw new ConflictException(
+        'You cannot close this inspection time, because it has pending QC inspections',
+      );
+    }
+
     const updater = await this.weightRecordTimeModel.updateOne(
       { _id: dto.id },
       { $set: { status: 'Closed' } },
