@@ -2,12 +2,22 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { ObservedDataDocument } from '../inspection/observed-data.schema';
 
-export type ProcessControlTimeDocument = ProcessControlTime & Document;
+export type ProdCommonTimeDocument = ProdCommonTime & Document;
 
 @Schema()
-export class ProcessControlTime {
+export class ProdCommonTime {
+ 
   @Prop()
-  time: string;
+  item: string;
+
+  @Prop()
+  batch: string;
+
+  @Prop()
+  remarks: string;
+
+  @Prop({ type: Object })
+  origin: any;
 
   @Prop({ type: [{ type: String, ref: 'ObservedData' }] })
   qualityChecking: ObservedDataDocument['_id'][];
@@ -16,11 +26,11 @@ export class ProcessControlTime {
   status: string;
 
   @Prop()
-  verifiedBy: string;
+  checkedBy: string;
 
   @Prop()
-  verifiedDate: string;
+  checkedDate: string;
 }
 
-export const ProcessControlTimeSchema =
-  SchemaFactory.createForClass(ProcessControlTime);
+export const ProdCommonTimeSchema =
+  SchemaFactory.createForClass(ProdCommonTime);

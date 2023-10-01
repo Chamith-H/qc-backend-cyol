@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-export class TimeItemsDto {
+export class CreateItemDto {
   @IsNotEmpty()
   id: string;
 

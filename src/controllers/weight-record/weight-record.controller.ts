@@ -52,4 +52,19 @@ export class WeightRecordController {
   async inspectItem(@Body() dto: UpdateInspectionDto) {
     return await this.weightRecordService.update_qcInspection(dto);
   }
+
+  @Post('close-shift')
+  async closeShift(@Body() dto: GetShiftDto) {
+    return await this.weightRecordService.close_currentShift(dto);
+  }
+
+  @Post('main-report')
+  async getMainReport(@Body() dto: GetShiftDto) {
+    return await this.weightRecordService.get_mainReport(dto);
+  }
+
+  @Post('item-report')
+  async getItemReport(@Body() dto: GetShiftDto) {
+    return await this.weightRecordService.get_itemReport(dto);
+  }
 }

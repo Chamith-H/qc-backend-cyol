@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { TimeSlotService } from './time-slot.service';
-import { SelectedTimeSlotDto } from '../process-control/process-control.dto';
+import { SelectedTimeSlotDto } from './time-slot.dto';
 
 @Controller('time-slot')
 export class TimeSlotController {

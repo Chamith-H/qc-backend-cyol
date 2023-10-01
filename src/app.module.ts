@@ -29,13 +29,13 @@ import { RejectionDataModule } from './controllers/rejection-data/rejection-data
 import { RejectionActionModule } from './controllers/rejection-action/rejection-action.module';
 import { RejectionListModule } from './controllers/rejection-list/rejection-list.module';
 import { AccessControlModule } from './controllers/access-control/access-control.module';
-import { ProcessControlModule } from './controllers/process-control/process-control.module';
 import { TimeSlotModule } from './controllers/time-slot/time-slot.module';
 import { SapHookModule } from './controllers/sap-hook/sap-hook.module';
 import { WhsTransferModule } from './controllers/whs-transfer/whs-transfer.module';
 import { ActionDeleteModule } from './controllers/action-delete/action-delete.module';
 import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
 import { WeightRecordModule } from './controllers/weight-record/weight-record.module';
+import { ProdCommonModule } from './controllers/prod-common/prod-common.module';
 
 @Module({
   imports: [
@@ -68,13 +68,13 @@ import { WeightRecordModule } from './controllers/weight-record/weight-record.mo
     RejectionActionModule,
     RejectionListModule,
     AccessControlModule,
-    ProcessControlModule,
     TimeSlotModule,
     SapHookModule,
     WhsTransferModule,
     ActionDeleteModule,
     PdfCreaterModule,
     WeightRecordModule,
+    ProdCommonModule,
   ],
   controllers: [AppController,],
   providers: [AppService,],

@@ -75,6 +75,14 @@ export class WeightRecordService {
         throw new ConflictException(`${dto.shift} shift already created`);
       }
 
+      const pendings = shifts.some((shiftObj) => shiftObj.status === 'Pending');
+
+      if (pendings) {
+        throw new ConflictException(
+          'Please complete current shift before creating a new shift',
+        );
+      }
+
       const newShift = new this.weightRecordShiftModel({
         ...dto,
         status: 'Pending',
@@ -142,15 +150,28 @@ export class WeightRecordService {
   }
 
   async get_allMains(dto: FilterMainDto) {
+    if (dto.date) {
+      dto.date = dto.date.slice(0, 10);
+    }
+
     return await this.weightRecordMainModel
       .find(dto)
-      .populate({ path: 'shifts' });
+      .populate({ path: 'shifts' })
+      .sort({ number: -1 });
   }
 
   async create_newTime(dto: CreateTimeDto) {
     const shift = await this.weightRecordShiftModel
       .findOne({ _id: dto.shiftId })
       .populate({ path: 'times' });
+
+    const openTime = shift.times.some((timeObj) => timeObj.status === 'Open');
+
+    if (openTime) {
+      throw new ConflictException(
+        'Please close all inspection times before creating a new inspection time',
+      );
+    }
 
     const existTime = shift.times.some((timeObj) => timeObj.time === dto.time);
 
@@ -225,12 +246,12 @@ export class WeightRecordService {
       .populate({ path: 'items' });
 
     const existItem = existTime.items.some(
-      (itemObj) => itemObj.item === dto.item,
+      (itemObj) => itemObj.item === dto.item && itemObj.batch === dto.batch,
     );
 
     if (existItem) {
       throw new ConflictException(
-        'This item has been already included in this inspection time',
+        'This batch(item) has been already included in this inspection time',
       );
     }
 
@@ -241,7 +262,7 @@ export class WeightRecordService {
 
     const itemDoc = {
       item: dto.item,
-      batch: '',
+      batch: dto.batch,
       remarks: '',
       origin: { ...existTime.origin, time: existTime.time },
       qualityChecking: checkData,
@@ -301,5 +322,55 @@ export class WeightRecordService {
     }
 
     return { message: 'QC status updated successfully' };
+  }
+
+  async close_currentShift(dto: GetShiftDto) {
+    const shift = await this.weightRecordShiftModel
+      .findOne({ _id: dto.id })
+      .populate({ path: 'times' });
+
+    const openTime = shift.times.some((timeObj) => timeObj.status === 'Open');
+
+    if (openTime) {
+      throw new ConflictException(
+        'Please close all inspection times before closing the shift',
+      );
+    }
+
+    const updater = await this.weightRecordShiftModel.updateOne(
+      { _id: dto.id },
+      {
+        $set: {
+          status: 'Completed',
+        },
+      },
+    );
+
+    if (updater.modifiedCount !== 1) {
+      throw new BadRequestException("Can't complete this shift");
+    }
+  }
+
+  async get_mainReport(dto: GetShiftDto) {
+    return await this.weightRecordShiftModel.findOne({ _id: dto.id }).populate({
+      path: 'times',
+      populate: {
+        path: 'items',
+        populate: {
+          path: 'qualityChecking',
+          populate: { path: 'standardData', populate: { path: 'parameterId' } },
+        },
+      },
+    });
+  }
+
+  async get_itemReport(dto: GetShiftDto) {
+    return await this.weightRecordItemModel.findOne({ _id: dto.id }).populate({
+      path: 'qualityChecking',
+      populate: {
+        path: 'standardData',
+        populate: { path: 'parameterId', populate: { path: 'uom equipment' } },
+      },
+    });
   }
 }

@@ -22,6 +22,7 @@ import { RejectionItemService } from '../rejection-item/rejection-item.service';
 import { CancellationItemService } from '../cancellation-item/cancellation-item.service';
 import { RejectionDataService } from '../rejection-data/rejection-data.service';
 import { WhsTransferService } from '../whs-transfer/whs-transfer.service';
+import { DateCreater } from 'src/configs/shared/date.creater';
 
 @Injectable()
 export class InspectionService {
@@ -38,6 +39,7 @@ export class InspectionService {
     private readonly cancellationItemService: CancellationItemService,
     private readonly rejectionDataService: RejectionDataService,
     private readonly whsTransferService: WhsTransferService,
+    private readonly dateCreater: DateCreater,
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -76,7 +78,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-09-27',
+      date: this.dateCreater.create_newDate(),
     };
 
     const newInspection = new this.inspectionModel(inspectionData);
@@ -127,7 +129,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-09-27',
+      date: this.dateCreater.create_newDate(),
     };
 
     if (!inspectionData.qualityChecking) {
@@ -337,7 +339,7 @@ export class InspectionService {
       description: '',
       remarks: '',
       code: '',
-      date: '2023-09-27',
+      date: this.dateCreater.create_newDate(),
     };
 
     const newInspection = new this.inspectionModel(inspectionData);

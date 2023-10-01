@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-export class TimeItemsDto {
+export class AddTimeDto {
   @IsNotEmpty()
   id: string;
 
   @IsNotEmpty()
-  item: string;
+  time: string;
 
   @IsNotEmpty()
-  batch: string;
+  stage: string;
 }

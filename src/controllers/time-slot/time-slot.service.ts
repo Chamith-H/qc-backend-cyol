@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TimeSlot, TimeSlotDocument } from 'src/schemas/common/timer.schema';
-import { SelectedTimeSlotDto } from '../process-control/process-control.dto';
+import { SelectedTimeSlotDto } from './time-slot.dto';
 
 @Injectable()
 export class TimeSlotService {
@@ -40,6 +40,6 @@ export class TimeSlotService {
 
   async get_selectedSlot(dto: SelectedTimeSlotDto) {
     const slots = await this.timeSlotModel.findOne(dto);
-    return slots
+    return slots;
   }
 }
