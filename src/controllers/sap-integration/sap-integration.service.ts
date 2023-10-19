@@ -234,12 +234,12 @@ export class SapIntegrationService {
           BaseLine: line,
           BaseType: 22,
           SerialNum: batch,
-          Weight1: quantity,
+          Quantity: quantity,
           WarehouseCode: warehouse,
           BatchNumbers: [
             {
               BatchNumber: batch,
-              Weight1: quantity,
+              Quantity: quantity,
             },
           ],
         },
@@ -317,6 +317,24 @@ export class SapIntegrationService {
       });
 
       return createdIVR.data;
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  }
+
+  async getPackingItems() {
+    const token = await this.get_sapToken();
+    const path = '/Items';
+    const logic = "?$select=ItemCode&$filter=U_PackingItem eq 'Y'";
+
+    try {
+      const packingItems = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return packingItems.data.value;
     } catch (error) {
       console.log(error.message);
       throw error;

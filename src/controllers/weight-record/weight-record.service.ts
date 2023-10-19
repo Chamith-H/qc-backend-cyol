@@ -337,6 +337,12 @@ export class WeightRecordService {
       );
     }
 
+    if (shift.times.length === 0) {
+      throw new ConflictException(
+        'Cannot complete this shift, bacause no inspections were added',
+      );
+    }
+
     const updater = await this.weightRecordShiftModel.updateOne(
       { _id: dto.id },
       {
@@ -372,5 +378,28 @@ export class WeightRecordService {
         populate: { path: 'parameterId', populate: { path: 'uom equipment' } },
       },
     });
+  }
+
+  async delete_selectedShift(dto: GetShiftDto) {
+    const exister = await this.weightRecordShiftModel.findOne({ _id: dto.id });
+    const origin = await this.weightRecordMainModel.findOne({
+      requestNo: exister.origin.request,
+    });
+
+    const dataCount = origin.shifts.length;
+
+    const deleter = await this.weightRecordShiftModel.deleteOne({
+      _id: dto.id,
+    });
+
+    if (deleter.deletedCount !== 1) {
+      throw new ConflictException("Sorry, you can't delete this shift");
+    }
+
+    if (dataCount === 1) {
+      await this.weightRecordMainModel.deleteOne({ _id: origin._id });
+    }
+
+    return { message: 'Shift deleted successfully' };
   }
 }

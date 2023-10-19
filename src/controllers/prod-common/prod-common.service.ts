@@ -304,6 +304,12 @@ export class ProdCommonService {
 
     const times = exist.times;
 
+    if (times.length === 0) {
+      throw new ConflictException(
+        'Cannot complete, because no inspections were added',
+      );
+    }
+
     const existTime = times.some((timeObj) => timeObj.status === 'Pending');
 
     if (existTime) {
@@ -329,6 +335,13 @@ export class ProdCommonService {
       .populate({ path: 'items' });
 
     const items = exist.items;
+
+    if (items.length === 0) {
+      throw new ConflictException(
+        'Cannot complete this shift, because no items were added',
+      );
+    }
+
     const existItem = items.some((itemObj) => itemObj.status === 'Pending');
 
     if (existItem) {
@@ -370,5 +383,47 @@ export class ProdCommonService {
         },
       },
     });
+  }
+
+  async delete_inspectionTime(dto: GetIdDto) {
+    const deleter = await this.prodCommonTimeModel.deleteOne({ _id: dto.id });
+    if (deleter.deletedCount !== 1) {
+      throw new BadRequestException(
+        "Sorry, you can't delete this inspection time",
+      );
+    }
+
+    return { message: 'Inspection time deleted successfully' };
+  }
+
+  async delete_inspectionItem(dto: GetIdDto) {
+    const deleter = await this.prodCommonItemModel.deleteOne({ _id: dto.id });
+
+    if (deleter.deletedCount !== 1) {
+      throw new ConflictException("Sorry, you can't delete this item");
+    }
+
+    return { message: 'Item deleted successfully' };
+  }
+
+  async delete_prodShift(dto: GetIdDto) {
+    const exister = await this.prodCommonShiftModel.findOne({ _id: dto.id });
+    const origin = await this.prodCommonMainModel.findOne({
+      requestNo: exister.origin.request,
+    });
+
+    const dataCount = origin.shifts.length;
+
+    const deleter = await this.prodCommonShiftModel.deleteOne({ _id: dto.id });
+
+    if (deleter.deletedCount !== 1) {
+      throw new ConflictException("Sorry, you can't delete this shift");
+    }
+
+    if (dataCount === 1) {
+      await this.prodCommonMainModel.deleteOne({ _id: origin._id });
+    }
+
+    return { message: 'Shift deleted successfully' };
   }
 }

@@ -72,4 +72,19 @@ export class ProdCommonController {
   async mainReport(@Body() dto: GetIdDto) {
     return await this.prodCommonService.get_finalReport(dto);
   }
+
+  @Post('delete-time')
+  async deleteTime(@Body() dto: GetIdDto) {
+    return await this.prodCommonService.delete_inspectionTime(dto);
+  }
+
+  @Post('delete-item')
+  async deleteItem(@Body() dto: GetIdDto) {
+    return await this.prodCommonService.delete_inspectionItem(dto);
+  }
+
+  @Post('delete-shift')
+  async deleteShift(@Body() dto: GetIdDto) {
+    return await this.prodCommonService.delete_prodShift(dto);
+  }
 }

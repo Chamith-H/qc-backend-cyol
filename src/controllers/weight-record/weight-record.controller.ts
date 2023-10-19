@@ -67,4 +67,9 @@ export class WeightRecordController {
   async getItemReport(@Body() dto: GetShiftDto) {
     return await this.weightRecordService.get_itemReport(dto);
   }
+
+  @Post('delete-shift')
+  async deleteShift(@Body() dto: GetShiftDto) {
+    return await this.weightRecordService.delete_selectedShift(dto);
+  }
 }

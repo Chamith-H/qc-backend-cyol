@@ -26,12 +26,12 @@ export class SapHookService {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   handleCron() {
     return this.sapIntegrationService.create_sapSession();
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   async trigger_GRNs() {
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
 
@@ -73,7 +73,7 @@ export class SapHookService {
     }
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   async trigger_IVRs() {
     const latest_ivrData = await this.sapIntegrationService.get_latestIVR();
 

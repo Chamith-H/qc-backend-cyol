@@ -36,6 +36,7 @@ import { ActionDeleteModule } from './controllers/action-delete/action-delete.mo
 import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
 import { WeightRecordModule } from './controllers/weight-record/weight-record.module';
 import { ProdCommonModule } from './controllers/prod-common/prod-common.module';
+import { PackingSectionModule } from './controllers/packing-section/packing-section.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { ProdCommonModule } from './controllers/prod-common/prod-common.module';
     PdfCreaterModule,
     WeightRecordModule,
     ProdCommonModule,
+    PackingSectionModule,
   ],
   controllers: [AppController,],
   providers: [AppService,],
