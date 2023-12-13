@@ -23,7 +23,7 @@ export class SapIntegrationService {
 
   async login_sapServer() {
     const hanaCredentials = {
-      CompanyDB: 'UAT260B',
+      CompanyDB: 'TEST260B',
       UserName: 'manager',
       Password: 'Test@1234',
     };
