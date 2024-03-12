@@ -8,7 +8,7 @@ export class AccessControlController {
   @Get('check')
   check_AccessControl() {
 
-    // for access controlls
+    // for access controlls to check
     return { message: 'allow to access' };
   }
 }
