@@ -7,6 +7,8 @@ export class AccessControlController {
   @UseGuards(JwtAuthGuard, new RbacRoleGuard(1))
   @Get('check')
   check_AccessControl() {
+
+    // for access controlls
     return { message: 'allow to access' };
   }
 }
