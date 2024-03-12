@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Put,
+  Param,
+} from '@nestjs/common';
 import {
   CreateInspectionDto,
   FilterInspectionDto,
@@ -19,9 +27,12 @@ export class InspectionController {
     return await this.inspectionService.create_newInspection(dto);
   }
 
-  @Post('all')
-  async getInspections(@Body() dto: FilterInspectionDto) {
-    return await this.inspectionService.get_allInspections(dto);
+  @Put('all/:page')
+  async getInspections(
+    @Body() dto: FilterInspectionDto,
+    @Param('page') page: number,
+  ) {
+    return await this.inspectionService.get_allInspections(dto, page);
   }
 
   @Get('all-inspections')

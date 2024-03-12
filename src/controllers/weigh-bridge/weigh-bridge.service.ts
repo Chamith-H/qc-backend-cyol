@@ -72,9 +72,10 @@ export class WeighBridgeService {
   }
 
   async get_pendingCount() {
-    const pendingInspections = (
-      await this.weighbridgeModel.find({ transaction: 'Pending' })
-    ).length;
+    const pendingInspections = await this.weighbridgeModel.countDocuments({
+      transaction: 'Pending',
+    });
+
     return pendingInspections;
   }
 }

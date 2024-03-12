@@ -265,7 +265,9 @@ export class RejectionDataService {
   }
 
   async get_pendingCount() {
-    const pendings = await this.rejectionDataModel.find({status: 'Pending'})
-    return pendings.length
+    const pendings = await this.rejectionDataModel.countDocuments({
+      status: 'Pending',
+    });
+    return pendings;
   }
 }

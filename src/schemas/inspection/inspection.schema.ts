@@ -22,6 +22,9 @@ export class Inspection {
   itemCode: string;
 
   @Prop()
+  itemName: string;
+
+  @Prop()
   baseDoc: string;
 
   @Prop()

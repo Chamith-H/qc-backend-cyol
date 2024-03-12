@@ -17,6 +17,7 @@ import { CancellationItemModule } from '../cancellation-item/cancellation-item.m
 import { RejectionDataModule } from '../rejection-data/rejection-data.module';
 import { WhsTransferModule } from '../whs-transfer/whs-transfer.module';
 import { DateCreater } from 'src/configs/shared/date.creater';
+import { SapIntegrationModule } from '../sap-integration/sap-integration.module';
 
 @Module({
   imports: [
@@ -26,12 +27,13 @@ import { DateCreater } from 'src/configs/shared/date.creater';
     ItemParameterModule,
     BatchOriginModule,
     DocOriginModule,
+    SapIntegrationModule,
     WeighBridgeModule,
     TransactionReportModule,
     RejectionItemModule,
     CancellationItemModule,
     RejectionDataModule,
-    WhsTransferModule
+    WhsTransferModule,
   ],
   controllers: [InspectionController],
   providers: [InspectionService, RequestGenerater, DateCreater],

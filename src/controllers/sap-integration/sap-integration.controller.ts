@@ -96,11 +96,18 @@ export class SapIntegrationController {
 
   @Get('all-warehouses')
   async getAllWarehouses() {
-    return await this.sapIntegrationService.all_warehouses();
+    // return await this.sapIntegrationService.all_warehouses();
+    return [];
   }
 
   @Get('all-items')
   async getAllItems() {
-    return await this.sapIntegrationService.get_qcItems();
+    // return await this.sapIntegrationService.get_qcItems();
+    return [];
+  }
+
+  @Get('check-item/:itemCode')
+  async checkItem(@Param('itemCode') itemCode: string) {
+    return await this.sapIntegrationService.check_qcItems(itemCode);
   }
 }

@@ -7,6 +7,10 @@ import { SapGrn, SapGrnDocument } from 'src/schemas/sap-hooks/sap-grn.schema';
 import { SapIvr, SapIvrDocument } from 'src/schemas/sap-hooks/sap-ivr.schema';
 import { InspectionService } from '../inspection/inspection.service';
 import { delay } from 'rxjs';
+import {
+  SapReturn,
+  SapReturnDocument,
+} from 'src/schemas/sap-hooks/sap-return.schema';
 
 @Injectable()
 export class SapHookService {
@@ -18,6 +22,9 @@ export class SapHookService {
     @InjectModel(SapIvr.name)
     private readonly ivrModel: Model<SapIvrDocument>,
 
+    @InjectModel(SapReturn.name)
+    private readonly rtnModel: Model<SapReturnDocument>,
+
     private readonly sapIntegrationService: SapIntegrationService,
     private readonly inspectionService: InspectionService,
   ) {}
@@ -26,54 +33,67 @@ export class SapHookService {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  // Manage SAP session ...................................................................................
   @Cron(CronExpression.EVERY_MINUTE)
   handleCron() {
     return this.sapIntegrationService.create_sapSession();
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // Trigger latest GRN s..................................................................................
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async trigger_GRNs() {
     const latest_grnData = await this.sapIntegrationService.get_latestGRN();
 
     for (const grn of latest_grnData) {
       const existGRN = await this.grnModel.findOne({ grnNo: grn.DocNum });
       if (!existGRN) {
-        const qcStatus = await this.sapIntegrationService.selected_wareHouse(
-          grn.DocumentLines[0].WarehouseCode,
-        );
+        for (const item of grn.DocumentLines) {
+          const qcStatus = await this.sapIntegrationService.selected_wareHouse(
+            item.WarehouseCode,
+          );
 
-        if (qcStatus.U_QC_Required === 'Y') {
-          const inspection = {
-            stage: 'GRN',
-            itemCode: grn.DocumentLines[0].ItemCode,
-            baseDoc: grn.DocNum,
-            batch: grn.DocumentLines[0].SerialNum,
-            warehouse: grn.DocumentLines[0].WarehouseCode,
-            quantity: grn.DocumentLines[0].Quantity,
-          };
+          if (qcStatus.U_QC_Required === 'Y') {
+            const inspection = {
+              stage: 'GRN',
+              itemCode: item.ItemCode,
+              baseDoc: grn.DocNum,
+              batch: null,
+              warehouse: item.WarehouseCode,
+              quantity: item.Quantity,
+            };
 
-          const createInspection =
-            await this.inspectionService.create_newOtherInspection(inspection);
+            const createInspection =
+              await this.inspectionService.create_newOtherInspection(
+                inspection,
+              );
 
-          if (createInspection) {
-            const grnDocument = { grnNo: grn.DocNum };
-            const newTrigger = new this.grnModel(grnDocument);
-            const response = await newTrigger.save();
-
-            // in a loop
-            for (let i = 1; i > 0; i++) {
-              if (response) {
-                setTimeout(() => {}, 15000);
-                break;
+            if (createInspection) {
+              // in a loop
+              for (let i = 1; i > 0; i++) {
+                if (createInspection) {
+                  setTimeout(() => {}, 15000);
+                  break;
+                }
               }
             }
+          }
+        }
+        const grnDocument = { grnNo: grn.DocNum };
+        const newTrigger = new this.grnModel(grnDocument);
+        const response = await newTrigger.save();
+
+        for (let i = 1; i > 0; i++) {
+          if (response) {
+            setTimeout(() => {}, 15000);
+            break;
           }
         }
       }
     }
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // Trigger latest IVR s..................................................................................
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async trigger_IVRs() {
     const latest_ivrData = await this.sapIntegrationService.get_latestIVR();
 
@@ -81,34 +101,100 @@ export class SapHookService {
       const existIVR = await this.ivrModel.findOne({ ivrNo: ivr.DocNum });
 
       if (!existIVR) {
-        const qcStatus = await this.sapIntegrationService.selected_wareHouse(
-          ivr.StockTransferLines[0].WarehouseCode,
-        );
+        for (const item of ivr.StockTransferLines) {
+          const qcStatus = await this.sapIntegrationService.selected_wareHouse(
+            item.WarehouseCode,
+          );
 
-        if (qcStatus.U_QC_Required === 'Y') {
-          const inspection = {
-            stage: 'IVR',
-            itemCode: ivr.StockTransferLines[0].ItemCode,
-            baseDoc: ivr.DocNum,
-            batch: ivr.StockTransferLines[0].SerialNumber,
-            warehouse: ivr.StockTransferLines[0].WarehouseCode,
-            quantity: ivr.StockTransferLines[0].Quantity,
-          };
+          if (qcStatus.U_QC_Required === 'Y') {
+            const inspection = {
+              stage: 'IVR',
+              itemCode: item.ItemCode,
+              baseDoc: ivr.DocNum,
+              batch: null,
+              warehouse: item.WarehouseCode,
+              quantity: item.Quantity,
+            };
 
-          const createInspection =
-            await this.inspectionService.create_newOtherInspection(inspection);
+            const createInspection =
+              await this.inspectionService.create_newOtherInspection(
+                inspection,
+              );
 
-          if (createInspection) {
-            const ivrDocument = { ivrNo: ivr.DocNum };
-            const newTrigger = new this.ivrModel(ivrDocument);
-            const response = await newTrigger.save();
-
-            for (let i = 1; i > 0; i++) {
-              if (response) {
-                setTimeout(() => {}, 15000);
-                break;
+            if (createInspection) {
+              for (let i = 1; i > 0; i++) {
+                if (createInspection) {
+                  setTimeout(() => {}, 15000);
+                  break;
+                }
               }
             }
+          }
+        }
+      }
+
+      const ivrDocument = { ivrNo: ivr.DocNum };
+      const newTrigger = new this.ivrModel(ivrDocument);
+      const response = await newTrigger.save();
+
+      for (let i = 1; i > 0; i++) {
+        if (response) {
+          setTimeout(() => {}, 15000);
+          break;
+        }
+      }
+    }
+  }
+
+  // Triget latest sales returns...........................................................................
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async trigger_Returns() {
+    const latest_returnData =
+      await this.sapIntegrationService.get_latestReturns();
+
+    for (const rtn of latest_returnData) {
+      const existRTN = await this.rtnModel.findOne({ rtnNo: rtn.DocNum });
+
+      if (!existRTN) {
+        for (const item of rtn.DocumentLines) {
+          const qcStatus = await this.sapIntegrationService.selected_wareHouse(
+            item.WarehouseCode,
+          );
+
+          if (qcStatus.U_QC_Required === 'Y') {
+            const inspection = {
+              stage: 'Return',
+              itemCode: item.ItemCode,
+              baseDoc: rtn.DocNum,
+              batch: null,
+              warehouse: item.WarehouseCode,
+              quantity: item.Quantity,
+            };
+
+            const createInspection =
+              await this.inspectionService.create_newOtherInspection(
+                inspection,
+              );
+
+            if (createInspection) {
+              // in a loop
+              for (let i = 1; i > 0; i++) {
+                if (createInspection) {
+                  setTimeout(() => {}, 15000);
+                  break;
+                }
+              }
+            }
+          }
+        }
+        const rtnDocument = { grnNo: rtn.DocNum };
+        const newTrigger = new this.grnModel(rtnDocument);
+        const response = await newTrigger.save();
+
+        for (let i = 1; i > 0; i++) {
+          if (response) {
+            setTimeout(() => {}, 15000);
+            break;
           }
         }
       }

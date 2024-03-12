@@ -37,13 +37,13 @@ import { PdfCreaterModule } from './controllers/pdf-creater/pdf-creater.module';
 import { WeightRecordModule } from './controllers/weight-record/weight-record.module';
 import { ProdCommonModule } from './controllers/prod-common/prod-common.module';
 import { PackingSectionModule } from './controllers/packing-section/packing-section.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://chamith:9875@testdb.qzldlok.mongodb.net/cyolQC',
-    ),
     ScheduleModule.forRoot(),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.DB_URI),
     AuthModule,
     RoleModule,
     PermissionModule,
@@ -78,7 +78,7 @@ import { PackingSectionModule } from './controllers/packing-section/packing-sect
     ProdCommonModule,
     PackingSectionModule,
   ],
-  controllers: [AppController,],
-  providers: [AppService,],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -19,13 +19,13 @@ export class SapIntegrationService {
     private readonly itemParameterService: ItemParameterService,
   ) {}
 
-  private sapBase = 'https://160.242.56.198:50000/b1s/v2';
+  private sapBase = process.env.SAP_HOST;
 
   async login_sapServer() {
     const hanaCredentials = {
-      CompanyDB: 'TEST260B',
-      UserName: 'manager',
-      Password: 'Test@1234',
+      CompanyDB: process.env.SAP_DB,
+      UserName: process.env.SAP_USER,
+      Password: process.env.SAP_PWD,
     };
 
     const path = '/Login';
@@ -88,6 +88,25 @@ export class SapIntegrationService {
       return getQCItems.data.value;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async check_qcItems(itemCode: string) {
+    const token = await this.get_sapToken();
+    const path = '/Items';
+    const logic = `?$select=ItemCode,ItemName,U_QC_Required&$filter=ItemCode eq '${itemCode}'`;
+
+    try {
+      const getQCItems = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+      if (getQCItems.data.value[0].U_QC_Required === 'N') {
+        throw new BadRequestException('This item is not a QC item');
+      }
+      return getQCItems.data.value[0];
+    } catch (error) {
+      throw new BadRequestException('You have entered a wrong item code');
     }
   }
 
@@ -262,7 +281,7 @@ export class SapIntegrationService {
   async get_latestGRN() {
     const token = await this.get_sapToken();
     const path = '/PurchaseDeliveryNotes';
-    const logic = '?$orderby=DocEntry desc&$top=5';
+    const logic = '?$orderby=DocEntry desc&$top=10';
 
     try {
       const latestGRN = await axios.get(this.sapBase + path + logic, {
@@ -280,7 +299,7 @@ export class SapIntegrationService {
   async get_latestIVR() {
     const token = await this.get_sapToken();
     const path = '/StockTransfers';
-    const logic = '?$orderby=DocEntry desc&$top=5';
+    const logic = '?$orderby=DocEntry desc&$top=10';
 
     try {
       const latestIVR = await axios.get(this.sapBase + path + logic, {
@@ -289,6 +308,24 @@ export class SapIntegrationService {
       });
 
       return latestIVR.data.value;
+    } catch (error) {
+      console.log(error.message);
+      throw error;
+    }
+  }
+
+  async get_latestReturns() {
+    const token = await this.get_sapToken();
+    const path = '/Returns';
+    const logic = '?$orderby=DocEntry desc&$top=10';
+
+    try {
+      const latestRTN = await axios.get(this.sapBase + path + logic, {
+        headers: { Cookie: `B1SESSION=${token}` },
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+      });
+
+      return latestRTN.data.value;
     } catch (error) {
       console.log(error.message);
       throw error;

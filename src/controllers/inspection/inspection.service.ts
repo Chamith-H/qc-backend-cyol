@@ -23,6 +23,7 @@ import { CancellationItemService } from '../cancellation-item/cancellation-item.
 import { RejectionDataService } from '../rejection-data/rejection-data.service';
 import { WhsTransferService } from '../whs-transfer/whs-transfer.service';
 import { DateCreater } from 'src/configs/shared/date.creater';
+import { SapIntegrationService } from '../sap-integration/sap-integration.service';
 
 @Injectable()
 export class InspectionService {
@@ -40,6 +41,7 @@ export class InspectionService {
     private readonly rejectionDataService: RejectionDataService,
     private readonly whsTransferService: WhsTransferService,
     private readonly dateCreater: DateCreater,
+    private readonly sapService: SapIntegrationService,
   ) {}
 
   async create_newInspection(dto: CreateInspectionDto) {
@@ -58,12 +60,15 @@ export class InspectionService {
       'REQ',
     );
 
+    const SAPItem = await this.sapService.check_qcItems(inspectItem.itemCode);
+
     const inspectionData = {
       number: requestData.requestNumber,
       requestId: requestData.requestId,
       docOrigin: dto.docOrigin,
       stage: inspectItem.stage,
       itemCode: inspectItem.itemCode,
+      itemName: SAPItem.ItemName,
       baseDoc: inspectItem.baseDoc,
       batch: newBatch,
       qualityChecking: checkingData,
@@ -110,11 +115,14 @@ export class InspectionService {
       'REQ',
     );
 
+    const SAPItem = await this.sapService.check_qcItems(initialData.itemCode);
+
     const inspectionData = {
       number: requestData.requestNumber,
       requestId: requestData.requestId,
       stage: initialData.stage,
       itemCode: initialData.itemCode,
+      itemName: SAPItem.ItemName,
       baseDoc: initialData.baseDoc,
       batch: targetBatch,
       qualityChecking: checkingData,
@@ -140,7 +148,8 @@ export class InspectionService {
     return newInspection.save();
   }
 
-  async get_allInspections(dto: FilterInspectionDto) {
+  // Get Inspection all data set
+  async get_allInspections(dto: FilterInspectionDto, page: number) {
     if (dto.qcStatus === 'All') {
       delete dto.qcStatus;
     }
@@ -157,7 +166,20 @@ export class InspectionService {
       dto.date = dto.date.slice(0, 10);
     }
 
-    return await this.inspectionModel.find(dto).sort({ number: -1 }).exec();
+    const skip = (page - 1) * 10;
+
+    const data = {
+      values: await this.inspectionModel
+        .find(dto)
+        .skip(skip)
+        .limit(10)
+        .sort({ number: -1 })
+        .exec(),
+
+      count: await this.inspectionModel.countDocuments(dto),
+    };
+
+    return data;
   }
 
   async fetch_inspections() {
@@ -347,9 +369,9 @@ export class InspectionService {
   }
 
   async get_inspectionCounter() {
-    const pendingInspections = (
-      await this.inspectionModel.find({ qcStatus: 'Pending' })
-    ).length;
+    const pendingInspections = await this.inspectionModel.countDocuments({
+      qcStatus: 'Pending',
+    });
 
     const pendingWeighBridge = await this.weighBridgeService.get_pendingCount();
 

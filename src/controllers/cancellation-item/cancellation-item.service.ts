@@ -93,7 +93,9 @@ export class CancellationItemService {
   }
 
   async get_cancellationCount() {
-    const pendings = await this.cancellationItemModel.find({transaction: 'Pending'})
-    return pendings.length
+    const pendings = await this.cancellationItemModel.countDocuments({
+      transaction: 'Pending',
+    });
+    return pendings;
   }
 }
