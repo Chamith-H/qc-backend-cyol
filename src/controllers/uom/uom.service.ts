@@ -67,4 +67,6 @@ export class UomService {
 
     return { message: 'ok' };
   }
+
+  async dummy() {}
 }
